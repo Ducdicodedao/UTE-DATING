@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "876966629874",
+    "project_id": "ute-dating",
+    "storage_bucket": "ute-dating.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:876966629874:android:a6d4d4699de9234d3e5b6b",
+        "android_client_info": {
+          "package_name": "com.client.utedating"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "876966629874-ovqeiimf7aog82lv8ibjmi3887eggqft.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.client.utedating",
+            "certificate_hash": "4a0742ba779a6e728f6dbfff857d1f7511caca34"
+          }
+        },
+        {
+          "client_id": "876966629874-g9skfmqjn8gnv4f3nhuh3ivjfbo1goth.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCOqQNqUSHXI2f_yYxm-EqO06dyn-nigA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "876966629874-g9skfmqjn8gnv4f3nhuh3ivjfbo1goth.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
