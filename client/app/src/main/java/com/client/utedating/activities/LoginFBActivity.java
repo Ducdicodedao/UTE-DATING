@@ -14,7 +14,6 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,10 +24,10 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginFBActivity extends AppCompatActivity {
+    private FirebaseAuth mAuth;
     CallbackManager mCallbackManager;
     LoginButton loginButton;
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +61,6 @@ public class LoginActivity extends AppCompatActivity {
             }
 
         });
-// ...
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -80,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.e("TAG", "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginFBActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
@@ -94,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else{
-            Toast.makeText(LoginActivity.this, "Please Sign In",
+            Toast.makeText(LoginFBActivity.this, "Please Sign In",
                     Toast.LENGTH_SHORT).show();
         }
     }
