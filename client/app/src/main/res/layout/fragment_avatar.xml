@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.FacultyFragment"
+    >
+
+    <TextView
+        android:id="@+id/i_am_a"
+        android:layout_width="295dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="116dp"
+        android:lineSpacingExtra="10sp"
+        android:text="Ảnh đại diện và bio"
+        android:textColor="@color/black"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/i_am_a">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:elevation="8dp"
+                app:cardCornerRadius="8dp"
+                android:layout_gravity="top|left"
+                >
+                <ImageView
+                    android:id="@+id/imageViewAvatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="top|left"
+                    tools:ignore="RtlHardcoded" />
+
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+        <FrameLayout
+            android:id="@+id/frameLayoutAddAvatar"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@drawable/dot_message"
+            android:layout_gravity="bottom|right"
+            tools:ignore="RtlHardcoded"
+            >
+            <ImageView
+                android:id="@+id/imgViewAddAvatar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_baseline_camera_alt_24"
+                />
+        </FrameLayout>
+
+    </FrameLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutAbout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:hint="About you"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:padding="5dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout"
+        app:counterEnabled="true"
+        app:counterMaxLength="200"
+        app:helperTextEnabled="true"
+        app:helperText="0/50 từ"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextAbout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonSubmitAvatar"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="40dp"
+        android:background="@drawable/button_shape50"
+        android:elevation="8dp"
+        android:strokeWidth="2"
+        android:strokeColor="#E8E6EA"
+        android:text="Hoàn tất"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutAbout" />
+</androidx.constraintlayout.widget.ConstraintLayout>

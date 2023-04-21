@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".fragments.FacultyFragment"
+
+        >
+
+        <TextView
+            android:id="@+id/i_am_a"
+            android:layout_width="295dp"
+            android:layout_height="51dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="116dp"
+            android:lineSpacingExtra="10sp"
+            android:text="Bạn đã sẵn sàng"
+            android:textColor="@color/black"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:text="Chào mừng bạn đến UTE DATING!Tôi rất vui khi bạn đã đăng ký tài khoản thành công. Điều này có nghĩa là bạn đã trở thành một phần của UTE DATING và có thể tìm kiếm những người bạn tuyệt vời trên đây. Đừng quên hãy là một người văn minh, lịch sự bạn nhé.\nCảm ơn bạn đã tin tưởng và sử dụng ứng dụng. Nếu bạn cần hỗ trợ hoặc có bất kỳ câu hỏi nào, xin đừng ngần ngại liên hệ với tôi. Chúc bạn sớm tìm được một nửa của mình!\nTrân trọng!\nFrom UTE DATING with Love ❤️"
+            app:layout_constraintTop_toBottomOf="@+id/i_am_a" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonSubmitWelcome"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/button_shape50"
+            android:elevation="8dp"
+            android:strokeWidth="2"
+            android:strokeColor="#E8E6EA"
+            android:text="Bắt đầu"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>

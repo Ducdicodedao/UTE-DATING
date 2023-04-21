@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.UTEDating" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.UTEDating" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -8,6 +8,7 @@
         <item name="colorControlNormal">@color/md_white_1000</item>
         <!--  It should be true otherwise action mode will not overlay toolbar -->
         <item name="windowActionModeOverlay">true</item>
+
     </style>
 
     <style name="Theme.UTEDating.NoActionBar">

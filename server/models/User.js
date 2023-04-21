@@ -5,35 +5,35 @@ const userSchema = new mongoose.Schema(
         name: {
             type: String,
             trim: true,
-            required: [true, "User must have a name"],
         },
         email: {
             type: String,
         },
-        password: {
-            type: String,
-            required: [true, "User must have a password"],
-        },
         facebook: {
             type: String,
-            required: [true, "User must have a password"],
         },
-        birthday: { type: Date },
+        birthday: { type: String, default: "" },
+
         gender: {
             type: String,
-            enum: ["male", "female", "other"],
+            default: "",
+            enum: ["male", "female", ""],
+        },
+        dateWith: {
+            type: String,
+            default: "",
+            enum: ["male", "female", ""],
         },
         avatar: {
             type: String,
         },
-        about: { type: String },
-        basics: [{ type: String }],
+        about: { type: String, default: "" },
         interests: [{ type: String }],
         faculty: {
             type: String,
+            default: "",
             enum: [
-                "Lý luận Chính trị",
-                "Khoa học ứng dụng",
+                "Chính trị - Luật",
                 "Cơ khí Chế tạo máy",
                 "Điện - Điện tử",
                 "Cơ khí Động Lực",
@@ -44,24 +44,22 @@ const userSchema = new mongoose.Schema(
                 "Công nghệ Hóa học và Thực phẩm",
                 "Xây dựng",
                 "Ngoại ngữ",
-                "Đào tạo Chất lượng cao",
+                "Đào tạo CLC",
+                "Đào tạo quốc tế",
+                "",
             ],
         },
         isAuthenticated: {
             type: Boolean,
-            default: true,
+            default: false,
         },
-        loc: {
-            location: {
-                type: {
-                    type: String, // Don't do `{ location: { type: String } }`
-                    enum: ["Point"], // 'location.type' must be 'Point'
-                    required: true,
-                },
-                coordinates: {
-                    type: [Number],
-                    required: true,
-                },
+        location: {
+            type: {
+                type: String, // Don't do `{ location: { type: String } }`
+                enum: ["Point"], // 'location.type' must be 'Point'
+            },
+            coordinates: {
+                type: [Number],
             },
         },
         userMatched: [

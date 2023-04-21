@@ -5,14 +5,21 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.client.utedating.R;
 import com.client.utedating.models.User;
+import com.client.utedating.models.UserModel;
+import com.client.utedating.retrofit.AuthApiService;
+import com.client.utedating.retrofit.RetrofitClient;
+import com.client.utedating.sharedPreferences.SharedPreferencesClient;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
@@ -29,21 +36,27 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.gson.Gson;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginGGActivity extends AppCompatActivity {
     private static final String TAG = "LoginGGActivity";
     GoogleSignInClient mGoogleSignInClient;
-    private FirebaseAuth mAuth;
-
-    ProgressDialog progressDialog;
     SignInButton buttonSigninGG;
     int RC_SIGN_IN = 100;
+    AuthApiService authApiService;
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_ggactivity);
 
         mAuth = FirebaseAuth.getInstance();
+        authApiService = RetrofitClient.getInstance().create(AuthApiService.class);
 
         buttonSigninGG = findViewById(R.id.sign_in_button);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -100,16 +113,39 @@ public class LoginGGActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            User mUser = new User();
                             assert user != null;
-                            mUser.setUserId(user.getUid());
-                            mUser.setName(user.getDisplayName());
-                            mUser.setAvatar(String.valueOf(user.getPhotoUrl()));
+                            authApiService.signup(user.getDisplayName(), user.getEmail(), String.valueOf(user.getPhotoUrl())).enqueue(new Callback<UserModel>() {
+                                @Override
+                                public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                                    if (response.isSuccessful()) {
+                                        UserModel userModel = response.body();
+                                        User mUser = userModel.getResult();
+                                        Log.e("TAG", mUser.toString());
 
-                            Log.e("TAG",mUser.toString() );
-                            Log.e("TAG",String.valueOf(user.getEmail()) );
-                            Intent intent = new Intent(LoginGGActivity.this, MainActivity.class);
-                            startActivity(intent);
+                                        Intent intent;
+                                        if (response.body().getMessage().equals("Signin Success")) {
+                                            if (mUser.getBirthday().equals("") || mUser.getGender().equals("") || mUser.getDateWith().equals("") || mUser.getAbout().equals("") || mUser.getFaculty().equals("") ||mUser.getInterests().size() == 0 ||mUser.getLocation() == null) {
+                                                intent = new Intent(LoginGGActivity.this, InitialActivity.class);
+                                            } else {
+                                                intent = new Intent(LoginGGActivity.this, MainActivity.class);
+                                            }
+                                        } else {
+                                            intent = new Intent(LoginGGActivity.this, InitialActivity.class);
+                                        }
+                                        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(LoginGGActivity.this);
+                                        sharedPreferencesClient.putUserInfo("user", mUser);
+
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<UserModel> call, Throwable t) {
+                                    Toast.makeText(LoginGGActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+
                             finish();
                             //updateUI(user);
                         } else {
@@ -119,8 +155,14 @@ public class LoginGGActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-
     }
+//    public void saveUserInfo(User user){
+//        SharedPreferences sharedPreferences = getSharedPreferences("USERINFO", Context.MODE_PRIVATE);
+//        Gson gson = new Gson();
+//        String json = gson.toJson(user);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putString("user", json);
+//        editor.apply();
+//    }
 
 }

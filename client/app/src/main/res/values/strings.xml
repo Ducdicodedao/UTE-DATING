@@ -21,7 +21,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="name_fragment">Name fragment</string>
+    <string name="birthday_fragment">Birthday fragment</string>
     <!-- Facebook -->
 
     <string name="facebook_app_id">6003182689807848</string>
