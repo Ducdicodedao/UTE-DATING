@@ -39,6 +39,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class LocationFragment extends Fragment {
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 123;
@@ -100,10 +107,14 @@ public class LocationFragment extends Fragment {
 
                             SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
                             User user = sharedPreferencesClient.getUserInfo("user");
-                            Locat l = new Locat();
-                            l.setType("Point");
-                            l.setCoordinates(new double[]{ latitude, longitude });
+
+
+                            Map<String, Object> l = new HashMap<>();
+                            l.put("type", "Point");
+                            l.put("coordinates", new Double[]{longitude, latitude});
                             user.setLocation(l);
+
+                            sharedPreferencesClient.putUserInfo("user", user);
 
                             initialActivity.getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.fragmentContainerView, AvatarFragment.class, null)

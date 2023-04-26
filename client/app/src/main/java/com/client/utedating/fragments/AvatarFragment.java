@@ -131,6 +131,7 @@ public class AvatarFragment extends Fragment {
                         user.setAvatar(String.valueOf(uriImage));
                         user.setAbout(editTextAbout.getText().toString().trim());
                         sharedPreferencesClient.putUserInfo("user", user);
+                        Log.e("TAG", user.toString());
 
                         userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
                             @Override
@@ -141,6 +142,8 @@ public class AvatarFragment extends Fragment {
                                             .setReorderingAllowed(true)
                                             .addToBackStack("name") // name can be null
                                             .commit();
+
+                                    Log.e("TAG",response.body().getResult().toString());
                                 }
                             }
                             @Override

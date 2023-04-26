@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.GenderUpdateFragment">
+
+    <TextView
+        android:id="@+id/buttonSubmitGender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30sp"
+        android:layout_marginEnd="30sp"
+        android:text="Cập nhật"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        />
+
+    <TextView
+        android:id="@+id/i_am_a"
+        android:layout_width="295dp"
+        android:layout_height="51dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="104dp"
+        android:text="Giới tính của bạn là"
+        android:textSize="34sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:lineSpacingExtra="10sp"
+        android:gravity="top"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonFemale"
+        android:layout_width="match_parent"
+        android:background="@drawable/button_shape10_normal"
+        android:text="Nữ"
+        android:textSize="20sp"
+        android:elevation="4dp"
+        android:layout_height="54dp"
+        android:layout_below="@+id/i_am_a"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginRight="40dp"
+        android:textAllCaps="false"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonMale"
+        android:layout_width="match_parent"
+        android:background="@drawable/button_shape10_normal"
+        android:text="Nam"
+        android:textSize="20sp"
+        android:elevation="4dp"
+        android:layout_height="54dp"
+        android:layout_below="@id/buttonFemale"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="40dp"
+        android:textAllCaps="false"
+        />
+</RelativeLayout>

@@ -7,6 +7,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -20,4 +21,7 @@ public interface UserApiService {
 
     @PATCH(route+"/updateInfo/{userId}")
     Call<UserModel> updateInfo(@Path("userId") String userId, @Body User user);
+
+    @GET(route+"/getInfo/{userId}")
+    Call<UserModel> getInfo(@Path("userId") String userId);
 }

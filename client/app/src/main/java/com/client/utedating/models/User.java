@@ -2,6 +2,7 @@ package com.client.utedating.models;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 public class User implements Serializable {
     private String _id;
@@ -18,7 +19,7 @@ public class User implements Serializable {
     private List<String> userMatched;
     private List<String> userSwipedRight;
     private Boolean isAuthenticated;
-    private Locat location;
+    private Map<String, Object> location;
 
     public User() {
     }
@@ -135,11 +136,11 @@ public class User implements Serializable {
         isAuthenticated = authenticated;
     }
 
-    public Locat getLocation() {
+    public Map<String, Object> getLocation() {
         return location;
     }
 
-    public void setLocation(Locat location) {
+    public void setLocation(Map<String, Object> location) {
         this.location = location;
     }
 

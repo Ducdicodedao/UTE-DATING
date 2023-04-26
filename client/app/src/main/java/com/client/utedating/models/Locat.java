@@ -5,12 +5,12 @@ import java.util.Arrays;
 
 public class Locat implements Serializable {
     private String type;
-    private double[] coordinates;
+
+    private Number[] coordinates;
 
     public Locat() {
 
     }
-
 
     public String getType() {
         return type;
@@ -20,11 +20,11 @@ public class Locat implements Serializable {
         this.type = type;
     }
 
-    public double[] getCoordinates() {
+    public Number[] getCoordinates() {
         return coordinates;
     }
 
-    public void setCoordinates(double[] coordinates) {
+    public void setCoordinates(Number[] coordinates) {
         this.coordinates = coordinates;
     }
 

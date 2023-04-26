@@ -8,6 +8,8 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import com.client.utedating.R;
 import com.client.utedating.adapters.ViewPagerAdapter;
@@ -21,7 +23,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
     private Context mContext;
     private ViewPager viewPager;
-
+    private FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         mContext = this;
 
         BottomNavigationView bnv = findViewById(R.id.bottom_navigation);
+
+        frameLayout = findViewById(R.id.frame_Layout);
+        frameLayout.setVisibility(View.GONE);
 
         ArrayList<Fragment> fragList = new ArrayList<>();
         fragList.add(new AccountFragment());
@@ -57,5 +62,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(frameLayout.getVisibility() == View.VISIBLE){
+            frameLayout.setVisibility(View.GONE);
+            viewPager.setVisibility(View.VISIBLE);
+        }
+        else{
+            super.onBackPressed();
+        }
     }
 }

@@ -17,3 +17,17 @@ export const updateInfo = async (req, res, next) => {
         next(err);
     }
 };
+
+export const getInfo = async (req, res, next) => {
+    try {
+        const user = await User.findOne({ _id: req.params.userId });
+        res.status(200).send({
+            success: true,
+            message: "Get Success",
+            result: user,
+        });
+    } catch (err) {
+        console.error(err.message);
+        next(err);
+    }
+};

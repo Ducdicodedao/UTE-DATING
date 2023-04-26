@@ -36,4 +36,9 @@
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
+    <style name="ChipChoice" parent="Widget.MaterialComponents.Chip.Choice">
+
+    </style>
+
 </resources>
