@@ -121,7 +121,7 @@ public class AvatarFragment extends Fragment {
         SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
         User user = sharedPreferencesClient.getUserInfo("user");
 
-        final  StorageReference storageReference = mStorageReference.child(System.currentTimeMillis()+"."+getfileextension(imgUri));
+        final  StorageReference storageReference = mStorageReference.child(user.getEmail()+"."+getfileextension(imgUri));
         storageReference.putFile(imgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

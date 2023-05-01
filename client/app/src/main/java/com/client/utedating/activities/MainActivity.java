@@ -15,6 +15,8 @@ import com.client.utedating.R;
 import com.client.utedating.adapters.ViewPagerAdapter;
 import com.client.utedating.fragments.AccountFragment;
 import com.client.utedating.fragments.ActivityFragment;
+import com.client.utedating.fragments.ChatFragment;
+import com.client.utedating.fragments.LikedFragment;
 import com.client.utedating.fragments.SwipeViewFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -40,11 +42,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         ArrayList<Fragment> fragList = new ArrayList<>();
         fragList.add(new AccountFragment());
         fragList.add(new SwipeViewFragment());
-        fragList.add(new ActivityFragment());
+        fragList.add(new ChatFragment());
+        fragList.add(new LikedFragment());
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(fragList, getSupportFragmentManager());
         viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
         bnv.setOnNavigationItemSelectedListener(this);
     }
 
@@ -59,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 break;
             case R.id.chat:
                 viewPager.setCurrentItem(2);
+                break;
+            case R.id.liked:
+                viewPager.setCurrentItem(3);
                 break;
         }
         return true;

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
+    <FrameLayout
+        android:layout_width="200dp"
+        android:layout_height="300dp">
+        <ImageView
+            android:id="@+id/imageViewLiked"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_baseline_android_24"/>
+
+        <TextView
+            android:id="@+id/textViewLiked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nguyen minh Duc"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            />
+    </FrameLayout>
+</androidx.cardview.widget.CardView>

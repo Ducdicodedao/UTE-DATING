@@ -37,10 +37,14 @@ import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
 import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 
@@ -68,7 +72,8 @@ public class AccountFragment extends Fragment {
     Uri imgUri ;
 
     private FirebaseAuth mAuth;
-
+    SharedPreferencesClient sharedPreferencesClient;
+    StorageReference mStorageReference;
     public AccountFragment() {
         // Required empty public constructor
     }
@@ -291,14 +296,13 @@ public class AccountFragment extends Fragment {
         }
         chipFaculty = new Chip(mainActivity);
         chipFaculty.setText(user.getFaculty());
-//        chipFaculty.setTextColor(getResources().getColor(R.color.colorPrimary));
-//        ChipDrawable chipDrawable = ChipDrawable.createFromAttributes(mainActivity,
-//                null,
-//                0,
-//                R.style.ChipChoice);
-//        chipFaculty.setChipDrawable(chipDrawable);
+        chipFaculty.setTextColor(getResources().getColor(R.color.colorPrimary));
+        ChipDrawable chipDrawable = ChipDrawable.createFromAttributes(mainActivity,
+                null,
+                0,
+                R.style.ChipChoice);
+        chipFaculty.setChipDrawable(chipDrawable);
         chipFaculty.setChecked(true);
-        chipFaculty.setCheckable(false);
         chipGroupFaculty.addView(chipFaculty);
 
         for (int i = 0; i < chipGroupInterest.getChildCount(); i++) {
@@ -320,7 +324,7 @@ public class AccountFragment extends Fragment {
 
     private void fetchData() {
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
-        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(mainActivity);
+        sharedPreferencesClient = new SharedPreferencesClient(mainActivity);
         user = sharedPreferencesClient.getUserInfo("user");
 
         userApiService.getInfo(user.get_id()).enqueue(new Callback<UserModel>() {
@@ -359,6 +363,7 @@ public class AccountFragment extends Fragment {
         buttonLogout = view.findViewById(R.id.buttonLogout);
         mainActivity = (MainActivity) getActivity();
         mAuth = FirebaseAuth.getInstance();
+        mStorageReference = FirebaseStorage.getInstance("gs://ute-dating.appspot.com").getReference("avatar");
     }
 
     @Override
@@ -371,11 +376,43 @@ public class AccountFragment extends Fragment {
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(mainActivity.getContentResolver(),imgUri);
                 imageViewAvatar.setImageBitmap(bitmap);
+
+                final StorageReference storageReference = mStorageReference.child(user.getEmail()+"."+getfileextension(imgUri));
+                storageReference.putFile(imgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uriImage) {
+                                user.setAvatar(String.valueOf(uriImage));
+                                sharedPreferencesClient.putUserInfo("user", user);
+
+                                userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
+                                    @Override
+                                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                                        if(response.isSuccessful()){
+                                            Log.e("TAG",response.body().getResult().toString());
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Call<UserModel> call, Throwable t) {
+                                        Log.e("TAG", t.getMessage());
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    private  String getfileextension(Uri audioUri){
+        ContentResolver contentResolver = mainActivity.getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return  mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(audioUri));
+    }
 
 }

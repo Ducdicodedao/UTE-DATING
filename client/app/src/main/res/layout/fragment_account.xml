@@ -335,7 +335,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
                 android:text="Chạy bộ" />
 
             <com.google.android.material.chip.Chip
@@ -345,7 +344,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
 
             <com.google.android.material.chip.Chip
@@ -355,7 +354,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
 
             <com.google.android.material.chip.Chip
@@ -365,7 +364,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_5"
@@ -374,7 +373,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_6"
@@ -383,7 +382,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_7"
@@ -392,7 +391,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_8"
@@ -401,7 +400,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_9"
@@ -410,7 +409,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_10"
@@ -419,7 +418,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_11"
@@ -428,7 +427,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_12"
@@ -437,7 +436,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_13"
@@ -446,7 +445,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_14"
@@ -455,7 +454,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_15"
@@ -464,7 +463,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_16"
@@ -473,7 +472,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_17"
@@ -482,7 +481,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_18"
@@ -491,7 +490,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_19"
@@ -500,7 +499,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_20"
@@ -509,7 +508,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_21"
@@ -518,7 +517,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_22"
@@ -527,7 +526,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_23"
@@ -536,7 +535,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_24"
@@ -545,7 +544,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_25"
@@ -554,7 +553,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_26"
@@ -563,7 +562,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_27"
@@ -572,7 +571,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_28"
@@ -581,7 +580,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_29"
@@ -590,7 +589,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:checkable="false"
+                
                 />
         </com.google.android.material.chip.ChipGroup>
 

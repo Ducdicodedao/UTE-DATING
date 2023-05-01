@@ -30,4 +30,21 @@ public class SharedPreferencesClient {
         User user = gson.fromJson(json, User.class);
         return user;
     }
+
+    public void setCardCount(String key, int count){
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(MY_SHARE_PREFERENCES, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = gson.toJson(count);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, json);
+        editor.apply();
+    }
+
+    public int getCardCount(String key){
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(MY_SHARE_PREFERENCES, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(key, null);
+        int count = gson.fromJson(json, Integer.class);
+        return count;
+    }
 }
