@@ -4,7 +4,7 @@ import java.util.List;
 
 public class UserMatched {
     private String _id;
-    private List<User>   userMatched;
+    private List<User>  userMatched;
 
     public String get_id() {
         return _id;

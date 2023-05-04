@@ -148,7 +148,7 @@ export const getUsersAvatar = async (req, res, next) => {
 
 export const getUserMatched = async (req, res, next) => {
     try {
-        const users = await User.find({ _id: req.params.userId })
+        const users = await User.findOne({ _id: req.params.userId })
             .select("userMatched")
             .populate({
                 path: "userMatched",

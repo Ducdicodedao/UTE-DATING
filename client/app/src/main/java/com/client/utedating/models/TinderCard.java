@@ -127,6 +127,8 @@ public class TinderCard {
                                     User user = sharedPreferencesClient.getUserInfo("user");
 
                                     Intent i = new Intent(mContext, MatchedActivity.class);
+                                    i.putExtra("userId", user.get_id());
+                                    i.putExtra("swipedUserId", mProfile.get_id());
                                     i.putExtra("userAvatar",user.getAvatar() );
                                     i.putExtra("swipedUserAvatar", mProfile.getImageUrl());
                                     mContext.startActivity(i);

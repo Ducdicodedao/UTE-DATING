@@ -1,16 +1,19 @@
 import mongoose from "mongoose";
 
-const messageSchema = new mongoose.Schema({
-    sender: {
-        type: mongoose.Schema.ObjectId,
-        ref: "User",
+const messageSchema = new mongoose.Schema(
+    {
+        receiver: {
+            type: mongoose.Schema.ObjectId,
+            ref: "User",
+        },
+        content: String,
+        sentAt: {
+            type: Date,
+            default: Date.now,
+        },
     },
-    content: String,
-    sentAt: {
-        type: Date,
-        default: Date.now,
-    },
-});
+    { timestamps: true }
+);
 
 const conversationSchema = mongoose.Schema(
     {
@@ -20,7 +23,7 @@ const conversationSchema = mongoose.Schema(
                 ref: "User",
             },
         ],
-        message: [messageSchema],
+        messages: [messageSchema],
     },
     { timestamps: true }
 );

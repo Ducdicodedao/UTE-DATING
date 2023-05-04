@@ -182,10 +182,10 @@ public class AvatarFragment extends Fragment {
         }
     }
 
-    private  String getfileextension(Uri audioUri){
+    private  String getfileextension(Uri uri){
         ContentResolver contentResolver = initialActivity.getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return  mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(audioUri));
+        return  mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
 }

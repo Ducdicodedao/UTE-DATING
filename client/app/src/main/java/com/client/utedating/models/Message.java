@@ -1,37 +1,53 @@
 package com.client.utedating.models;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 public class Message {
-    private String conversationId;
-    private String message;
-    private String receiverId;
+    private String _id;
+    private String receiver;
+    private String content;
+    private Date sentAt;
 
-    public Message(String conversationId, String message, String receiverId) {
-        this.conversationId = conversationId;
-        this.message = message;
-        this.receiverId = receiverId;
+    public Message(){
+
+    }
+    public Message(String _id, String receiver, String content, Date sentAt) {
+        this._id = _id;
+        this.receiver = receiver;
+        this.content = content;
+        this.sentAt = sentAt;
     }
 
-    public String getConversationId() {
-        return conversationId;
+    public String get_id() {
+        return _id;
     }
 
-    public void setConversationId(String conversationId) {
-        this.conversationId = conversationId;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
-    public String getMessage() {
-        return message;
+    public String getReceiver() {
+        return receiver;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
-    public String getReceiverId() {
-        return receiverId;
+    public String getContent() {
+        return content;
     }
 
-    public void setReceiverId(String receiverId) {
-        this.receiverId = receiverId;
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Date getSentAt() {
+        return sentAt;
+    }
+
+    public void setSentAt(Date sentAt) {
+        this.sentAt = sentAt;
     }
 }

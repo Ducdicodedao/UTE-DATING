@@ -54,6 +54,8 @@ dependencies {
     implementation 'com.github.florent37:shapeofview:1.4.7'
     implementation 'com.github.smarteist:autoimageslider:1.3.2'
     implementation 'jp.wasabeef:glide-transformations:4.3.0'
+    implementation 'org.ocpsoft.prettytime:prettytime:5.0.0.Final'
+    implementation 'com.github.marlonlom:timeago:4.0.0'
 
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:31.5.0')

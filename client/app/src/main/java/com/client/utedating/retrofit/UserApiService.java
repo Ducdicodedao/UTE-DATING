@@ -4,6 +4,7 @@ import com.client.utedating.models.NoResultModel;
 import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
 import com.client.utedating.models.UsersLikedModel;
+import com.client.utedating.models.UsersMatchedModel;
 import com.client.utedating.models.UsersModel;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public interface UserApiService {
     Call<UsersLikedModel> getUserSwipedRight(@Path("userId") String userId);
 
     @GET(route+"/getUserMatched/{userId}")
-    Call<UsersLikedModel> getUserMatched(@Path("userId") String userId);
+    Call<UsersMatchedModel> getUserMatched(@Path("userId") String userId);
 
     @GET(route+"/isUserSwipedRight/{userId}/{swipedUserId}")
     Call<List<String>> getUsersAvatar(@Path("userId") String userId, @Path("swipedUserId") String swipedUserId);
