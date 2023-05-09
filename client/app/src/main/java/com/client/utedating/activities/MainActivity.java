@@ -40,10 +40,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         frameLayout.setVisibility(View.GONE);
 
         ArrayList<Fragment> fragList = new ArrayList<>();
-        fragList.add(new AccountFragment());
         fragList.add(new SwipeViewFragment());
-        fragList.add(new ChatFragment());
         fragList.add(new LikedFragment());
+        fragList.add(new ChatFragment());
+        fragList.add(new AccountFragment());
         ViewPagerAdapter pagerAdapter = new ViewPagerAdapter(fragList, getSupportFragmentManager());
         viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(pagerAdapter);
@@ -54,16 +54,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
-            case R.id.account:
+            //account
+            case R.id.card:
                 viewPager.setCurrentItem(0);
                 break;
-            case R.id.fire:
+            case R.id.liked:
                 viewPager.setCurrentItem(1);
                 break;
             case R.id.chat:
                 viewPager.setCurrentItem(2);
                 break;
-            case R.id.liked:
+            case R.id.account:
                 viewPager.setCurrentItem(3);
                 break;
         }

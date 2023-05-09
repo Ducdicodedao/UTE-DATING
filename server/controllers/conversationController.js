@@ -82,3 +82,70 @@ export const getMessages = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getConversationsByUserId = async (req, res, next) => {
+    try {
+        const conversations = await Conversation.find({
+            participants: {
+                $in: [req.params.userId],
+            },
+        }).populate({
+            path: "participants",
+            select: "_id name avatar",
+        });
+        const result = conversations
+            .map((conversation) => {
+                const lastMessage =
+                    conversation.messages[conversation.messages.length - 1];
+                //? phương thức toObject() để chuyển đổi đối tượng conversation từ đối tượng Mongoose sang đối tượng JavaScript thuần túy.
+                //? Điều này giúp bạn sao chép các trường của đối tượng conversation mà không cần tạo ra các trường bổ sung được thêm vào bởi Mongoose.
+                const { messages, ...others } = conversation.toObject();
+                return { ...others, lastMessage };
+            })
+            .filter((conversation) => conversation.lastMessage != null);
+        res.status(200).json({
+            success: true,
+            message: "Get Success",
+            result: result,
+        });
+    } catch {
+        next(error);
+    }
+};
+
+export const getUserMatched = async (req, res, next) => {
+    try {
+        const conversations = await Conversation.find({
+            participants: {
+                $in: [req.params.userId],
+            },
+        }).populate({
+            path: "participants",
+            select: "_id name avatar",
+        });
+        const result = conversations
+            .map((conversation) => {
+                const lastMessage =
+                    conversation.messages[conversation.messages.length - 1];
+                //? phương thức toObject() để chuyển đổi đối tượng conversation từ đối tượng Mongoose sang đối tượng JavaScript thuần túy.
+                //? Điều này giúp bạn sao chép các trường của đối tượng conversation mà không cần tạo ra các trường bổ sung được thêm vào bởi Mongoose.
+                const { messages, ...others } = conversation.toObject();
+                return { ...others, lastMessage };
+            })
+            .filter((conversation) => conversation.lastMessage == null)
+            .map((conversation) => {
+                conversation.participants = conversation.participants.filter(
+                    (participant) => participant._id != req.params.userId
+                );
+                return conversation;
+            });
+
+        res.status(200).json({
+            success: true,
+            message: "Get Success",
+            result: result,
+        });
+    } catch {
+        next(error);
+    }
+};

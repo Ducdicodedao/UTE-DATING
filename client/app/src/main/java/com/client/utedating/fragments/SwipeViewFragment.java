@@ -99,7 +99,6 @@ public class SwipeViewFragment extends Fragment {
         //mSwipeView.lockViews();
 
         fetchData();
-        setData();
 
 //        mSwipeView.getBuilder().getSwipePlaceHolderView().setFlingListener(new OnCardSwipedListener() {
 //            @Override
@@ -115,10 +114,6 @@ public class SwipeViewFragment extends Fragment {
 //            mSwipeView.addView(new TinderCard(mContext, profile, mSwipeView));
 //        }
 
-
-    }
-
-    private void setData() {
 
     }
 

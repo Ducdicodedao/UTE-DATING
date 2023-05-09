@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.client.utedating.R;
 import com.client.utedating.activities.InitialActivity;
 import com.client.utedating.activities.MainActivity;
+import com.client.utedating.adapters.ViewPagerAdapter;
 import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.RetrofitClient;
@@ -30,7 +32,7 @@ import retrofit2.Response;
 
 public class DatewithUpdateFragment extends Fragment {
     Button buttonFemale, buttonMale;
-    TextView buttonSubmitDatewith;
+    TextView buttonSubmitDatewith, buttonCancelDatewith;
 
     MainActivity mainActivity;
     String gender = "";
@@ -53,6 +55,7 @@ public class DatewithUpdateFragment extends Fragment {
         buttonFemale = view.findViewById(R.id.buttonFemale);
         buttonMale = view.findViewById(R.id.buttonMale);
         buttonSubmitDatewith = view.findViewById(R.id.buttonSubmitDatewith);
+        buttonCancelDatewith = view.findViewById(R.id.buttonCancelDatewith);
 
         mainActivity = (MainActivity) getActivity();
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
@@ -137,7 +140,11 @@ public class DatewithUpdateFragment extends Fragment {
                         if(response.isSuccessful()){
                             Toast.makeText(mainActivity,"Cập nhật thành công", Toast.LENGTH_SHORT).show();
 
-                            mainActivity.recreate();
+                            ViewPager viewPager =  mainActivity.findViewById(R.id.view_pager);
+                            ViewPagerAdapter viewPagerAdapter = (ViewPagerAdapter) viewPager.getAdapter();
+                            Fragment accountFragment = viewPagerAdapter.getItem(3);
+                            accountFragment.onResume();
+
                             mainActivity.findViewById(R.id.frame_Layout).setVisibility(View.GONE);
                             mainActivity.findViewById(R.id.view_pager).setVisibility(View.VISIBLE);
 
@@ -152,5 +159,14 @@ public class DatewithUpdateFragment extends Fragment {
                 });
             }
         });
+        buttonCancelDatewith.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mainActivity.findViewById(R.id.frame_Layout).setVisibility(View.GONE);
+                mainActivity.findViewById(R.id.view_pager).setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 }

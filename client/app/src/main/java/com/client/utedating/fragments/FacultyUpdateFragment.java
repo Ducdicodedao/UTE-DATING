@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.client.utedating.R;
 import com.client.utedating.activities.InitialActivity;
 import com.client.utedating.activities.MainActivity;
+import com.client.utedating.adapters.ViewPagerAdapter;
 import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.RetrofitClient;
@@ -34,7 +36,7 @@ import retrofit2.Response;
 public class FacultyUpdateFragment extends Fragment {
     ChipGroup chipGroup;
     Chip chip;
-    TextView buttonSubmitFaculty;
+    TextView buttonSubmitFaculty, buttonCancelFaculty;
 
     MainActivity mainActivity;
     UserApiService userApiService;
@@ -58,6 +60,7 @@ public class FacultyUpdateFragment extends Fragment {
 
         chipGroup = view.findViewById(R.id.chipGroupFaculty);
         buttonSubmitFaculty = view.findViewById(R.id.buttonSubmitFaculty);
+        buttonCancelFaculty = view.findViewById(R.id.buttonCancelFaculty);
 
         SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
         User user = sharedPreferencesClient.getUserInfo("user");
@@ -96,7 +99,13 @@ public class FacultyUpdateFragment extends Fragment {
                         if(response.isSuccessful()){
                             Toast.makeText(mainActivity,"Cập nhật thành công", Toast.LENGTH_SHORT).show();
 
-                            mainActivity.recreate();
+                            ViewPager viewPager =  mainActivity.findViewById(R.id.view_pager);
+                            ViewPagerAdapter viewPagerAdapter = (ViewPagerAdapter) viewPager.getAdapter();
+                            Fragment accountFragment = viewPagerAdapter.getItem(3);
+                            accountFragment.onResume();
+
+                            mainActivity.findViewById(R.id.frame_Layout).setVisibility(View.GONE);
+                            mainActivity.findViewById(R.id.view_pager).setVisibility(View.VISIBLE);
 
                             Log.e("TAG", user.toString());
                         }
@@ -109,6 +118,18 @@ public class FacultyUpdateFragment extends Fragment {
                 });
 
                 Log.e("TAG", user.toString());
+            }
+        });
+        buttonCancelFaculty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewPager viewPager =  mainActivity.findViewById(R.id.view_pager);
+                ViewPagerAdapter viewPagerAdapter = (ViewPagerAdapter) viewPager.getAdapter();
+                Fragment accountFragment = viewPagerAdapter.getItem(3);
+                accountFragment.onResume();
+
+                mainActivity.findViewById(R.id.frame_Layout).setVisibility(View.GONE);
+                mainActivity.findViewById(R.id.view_pager).setVisibility(View.VISIBLE);
             }
         });
     }

@@ -18,12 +18,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.client.utedating.R;
 import com.client.utedating.activities.ChatActivity;
 import com.client.utedating.activities.MainActivity;
+import com.client.utedating.adapters.ConversationAdapter;
 import com.client.utedating.adapters.LikeAdapter;
 import com.client.utedating.adapters.MatchedAdapter;
 import com.client.utedating.adapters.MessageListAdapter;
+import com.client.utedating.events.IConversationListener;
 import com.client.utedating.events.IUserListener;
+import com.client.utedating.models.Conversation;
+import com.client.utedating.models.ConversationModel;
 import com.client.utedating.models.Like;
 import com.client.utedating.models.MessageItem;
+import com.client.utedating.models.MessageModel;
 import com.client.utedating.models.User;
 import com.client.utedating.models.UsersLikedModel;
 import com.client.utedating.models.UsersMatchedModel;
@@ -65,10 +70,13 @@ public class ChatFragment extends Fragment {
     User user;
     UserApiService userApiService;
     ConversationApiService conversationApiService;
+
     List<User> userMatchedList = new ArrayList<>();
+    List<Conversation> conversationList = new ArrayList<>();
 
     MatchedAdapter matchedAdapter;
-    MessageListAdapter messageAdapter;
+    ConversationAdapter conversationAdapter;
+
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -133,9 +141,15 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        Log.e("TAG", "ChatFragment onViewCreated");
         initView(view);
-        fetchData(view);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("TAG", "ChatFragment onResume");
+        fetchData(getView());
     }
 
     private void fetchData(View view) {
@@ -144,30 +158,71 @@ public class ChatFragment extends Fragment {
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
         conversationApiService = RetrofitClient.getInstance().create(ConversationApiService.class);
 
-        userApiService.getUserMatched(user.get_id()).enqueue(new Callback<UsersMatchedModel>() {
+//        userApiService.getUserMatched(user.get_id()).enqueue(new Callback<UsersMatchedModel>() {
+//            @Override
+//            public void onResponse(Call<UsersMatchedModel> call, Response<UsersMatchedModel> response) {
+//                if (response.isSuccessful()) {
+//                    userMatchedList = response.body().getResult().getUserMatched();
+//
+//                    matchedAdapter = new MatchedAdapter(userMatchedList, new IUserListener() {
+//                        @Override
+//                        public void onUserListener(User u) {
+//                            conversationApiService.getConversationIdByUserId(user.get_id(), u.get_id()).enqueue(new Callback<String>() {
+//                                @Override
+//                                public void onResponse(Call<String> call, Response<String> response) {
+//                                    if(response.isSuccessful()){
+//                                        Intent i = new Intent(view.getContext(), ChatActivity.class);
+//                                        i.putExtra("receiverId", u.get_id());
+//                                        i.putExtra("name", u.getName());
+//                                        i.putExtra("avatar", u.getAvatar());
+//                                        i.putExtra("conversationId", response.body());
+//                                        startActivity(i);
+//                                    }
+//                                }
+//                                @Override
+//                                public void onFailure(Call<String> call, Throwable t) {
+//                                    Log.e("TAG",t.getMessage() );
+//                                }
+//                            });
+//                        }
+//                    });
+//                    recyclerViewMatched.setAdapter(matchedAdapter);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<UsersMatchedModel> call, Throwable t) {
+//                Log.e("TAG", t.getMessage());
+//            }
+//        });
+        userMatchedList.clear();
+        conversationApiService.getUserMatched(user.get_id()).enqueue(new Callback<ConversationModel>() {
             @Override
-            public void onResponse(Call<UsersMatchedModel> call, Response<UsersMatchedModel> response) {
+            public void onResponse(Call<ConversationModel> call, Response<ConversationModel> response) {
                 if (response.isSuccessful()) {
-                    userMatchedList = response.body().getResult().getUserMatched();
-
+                    List<Conversation> conversations = response.body().getResult();
+                    for (Conversation conversation : conversations) {
+                        userMatchedList.add(conversation.getParticipants().get(0));
+                    }
                     matchedAdapter = new MatchedAdapter(userMatchedList, new IUserListener() {
                         @Override
                         public void onUserListener(User u) {
                             conversationApiService.getConversationIdByUserId(user.get_id(), u.get_id()).enqueue(new Callback<String>() {
                                 @Override
                                 public void onResponse(Call<String> call, Response<String> response) {
-                                    if(response.isSuccessful()){
+                                    if (response.isSuccessful()) {
                                         Intent i = new Intent(view.getContext(), ChatActivity.class);
                                         i.putExtra("receiverId", u.get_id());
                                         i.putExtra("name", u.getName());
                                         i.putExtra("avatar", u.getAvatar());
-                                        i.putExtra("conversationId", (String) response.body());
+                                        i.putExtra("conversationId", response.body());
                                         startActivity(i);
                                     }
                                 }
+
                                 @Override
                                 public void onFailure(Call<String> call, Throwable t) {
-                                    Log.e("TAG",t.getMessage() );
+                                    Log.e("TAG", t.getMessage());
                                 }
                             });
                         }
@@ -177,7 +232,36 @@ public class ChatFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<UsersMatchedModel> call, Throwable t) {
+            public void onFailure(Call<ConversationModel> call, Throwable t) {
+
+            }
+        });
+
+        conversationApiService.getConversationByUserId(user.get_id()).enqueue(new Callback<ConversationModel>() {
+            @Override
+            public void onResponse(Call<ConversationModel> call, Response<ConversationModel> response) {
+                if (response.isSuccessful()) {
+                    Log.e("TAG", response.body().getMessage());
+                    conversationList = response.body().getResult();
+                    Log.e("TAG", conversationList.size() + "");
+                    conversationAdapter = new ConversationAdapter(conversationList, user.get_id(), new IConversationListener() {
+                        @Override
+                        public void onConversationListener(User u, String conversationId) {
+                            Log.e("TAG", "onConversationListener");
+                            Intent i = new Intent(view.getContext(), ChatActivity.class);
+                            i.putExtra("receiverId", u.get_id());
+                            i.putExtra("name", u.getName());
+                            i.putExtra("avatar", u.getAvatar());
+                            i.putExtra("conversationId", conversationId);
+                            startActivity(i);
+                        }
+                    });
+                    recyclerViewMessage.setAdapter(conversationAdapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ConversationModel> call, Throwable t) {
                 Log.e("TAG", t.getMessage());
             }
         });
@@ -187,7 +271,10 @@ public class ChatFragment extends Fragment {
         recyclerViewMatched = view.findViewById(R.id.recyclerViewMatched);
         recyclerViewMessage = view.findViewById(R.id.recyclerViewMessages);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewMatched.setLayoutManager(layoutManager);
+        LinearLayoutManager layoutManagerMatched = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewMatched.setLayoutManager(layoutManagerMatched);
+
+        LinearLayoutManager layoutManagerConversation = new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerViewMessage.setLayoutManager(layoutManagerConversation);
     }
 }

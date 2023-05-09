@@ -56,6 +56,12 @@ public class LikedFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initView(view);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         fetchData();
     }
 

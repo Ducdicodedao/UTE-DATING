@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/card"
+        android:icon="@drawable/ic_baseline_style_24"
+        android:title="Matchs" />
+
+    <item
+        android:id="@+id/liked"
+        android:icon="@drawable/ic_baseline_favorite_24"
+        android:title="Liked" />
+
+    <item
+        android:id="@+id/chat"
+        android:icon="@drawable/ic_baseline_chat_24"
+        android:title="Chat" />
+
     <item
         android:id="@+id/account"
         android:icon="@drawable/account_circle"
         android:title="Profile" />
-
-    <item
-        android:id="@+id/fire"
-        android:icon="@drawable/fire"
-        android:title="Matchs" />
-
-    <item
-        android:id="@+id/chat"
-        android:icon="@drawable/chat_processing"
-        android:title="Chat" />
-
-    <item
-        android:id="@+id/liked"
-        android:icon="@drawable/ic_baseline_insert_drive_file_24"
-        android:title="Liked" />
-
-
 </menu>

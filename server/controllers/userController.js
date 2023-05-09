@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Conversation from "../models/Conversation.js";
 
 export const updateInfo = async (req, res, next) => {
     try {
@@ -162,5 +163,27 @@ export const getUserMatched = async (req, res, next) => {
     } catch (err) {
         console.error(err.message);
         next(err);
+    }
+};
+
+export const unMatched = async (req, res, next) => {
+    try {
+        await Conversation.findOneAndDelete({ _id: req.body.conversationId });
+        const updatedUser = await User.findByIdAndUpdate(
+            req.body.userId,
+            { $pull: { userMatched: req.body.matchedUserId } },
+            { new: true }
+        );
+        const updatedMatchedUser = await User.findByIdAndUpdate(
+            req.body.matchedUserId,
+            { $pull: { userMatched: req.body.userId } },
+            { new: true }
+        );
+        res.status(200).json({
+            success: true,
+            message: "UnMatched Success",
+        });
+    } catch {
+        next(error);
     }
 };

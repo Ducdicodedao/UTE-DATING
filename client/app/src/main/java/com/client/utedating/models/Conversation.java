@@ -4,8 +4,8 @@ import java.util.List;
 
 public class Conversation {
     private String _id;
-    private List<String> participants;
-    private List<Message> messages;
+    private List<User> participants;
+    private Message lastMessage;
 
     public Conversation() {
     }
@@ -18,19 +18,19 @@ public class Conversation {
         this._id = _id;
     }
 
-    public List<String> getParticipants() {
+    public List<User> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(List<String> participants) {
+    public void setParticipants(List<User> participants) {
         this.participants = participants;
     }
 
-    public List<Message> getMessages() {
-        return messages;
+    public Message getLastMessage() {
+        return lastMessage;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setLastMessage(Message lastMessage) {
+        this.lastMessage = lastMessage;
     }
 }

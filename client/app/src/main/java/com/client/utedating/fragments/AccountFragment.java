@@ -59,7 +59,7 @@ public class AccountFragment extends Fragment {
     ImageView imageViewAuth, imageViewNotAuth;
     EditText editTextAbout;
     Button buttonFemale, buttonMale, buttonDatewithFemale, buttonDatewithMale;
-    ChipGroup chipGroupFaculty,chipGroupInterest;
+    ChipGroup chipGroupFaculty, chipGroupInterest;
     Chip chipFaculty;
     Button buttonLogout;
 
@@ -69,11 +69,11 @@ public class AccountFragment extends Fragment {
     User user;
 
     Integer ADD_AVATAR = 2;
-    Uri imgUri ;
-
-    private FirebaseAuth mAuth;
+    Uri imgUri;
     SharedPreferencesClient sharedPreferencesClient;
     StorageReference mStorageReference;
+    private FirebaseAuth mAuth;
+
     public AccountFragment() {
         // Required empty public constructor
     }
@@ -88,9 +88,19 @@ public class AccountFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.e("TAG", "AccountFragment onViewCreated");
         initView(view);
         fetchData();
-        setData(view);
+        setData();
+        handleEvent();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("TAG", "AccountFragment onResume");
+        fetchData();
+        setData();
         handleEvent();
     }
 
@@ -112,11 +122,10 @@ public class AccountFragment extends Fragment {
                 // Lấy số ký tự đang nhập
                 int length = s.toString().length();
                 // Làm gì đó với số ký tự
-                textViewCountAbout.setText(length+"/200");
-                if(length <= 200){
+                textViewCountAbout.setText(length + "/200");
+                if (length <= 200) {
                     textViewSaveAbout.setVisibility(View.VISIBLE);
-                }
-                else{
+                } else {
                     textViewSaveAbout.setVisibility(View.INVISIBLE);
                 }
             }
@@ -144,7 +153,7 @@ public class AccountFragment extends Fragment {
                 handleGender();
             }
         });
-        buttonDatewithFemale.setOnClickListener(new View.OnClickListener() {
+        buttonDatewithMale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleDatewith();
@@ -196,7 +205,7 @@ public class AccountFragment extends Fragment {
         userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     Toast.makeText(mainActivity, "Cập nhật mô tả thành công", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -264,7 +273,7 @@ public class AccountFragment extends Fragment {
         mainActivity.findViewById(R.id.view_pager).setVisibility(View.GONE);
     }
 
-    private void setData(View view) {
+    private void setData() {
         Glide
                 .with(mainActivity)
                 .load(user.getAvatar())
@@ -272,27 +281,33 @@ public class AccountFragment extends Fragment {
                 .into(imageViewAvatar);
 
         textViewName.setText(user.getName());
-        if(user.getAuthenticated()){
+        if (user.getAuthenticated()) {
             imageViewAuth.setVisibility(View.VISIBLE);
             imageViewNotAuth.setVisibility(View.GONE);
         }
         editTextAbout.setText(user.getAbout());
-        textViewCountAbout.setText(user.getAbout().length()+"/200");
-        if(user.getGender().equals("male")){
+        textViewCountAbout.setText(user.getAbout().length() + "/200");
+        if (user.getGender().equals("male")) {
             buttonMale.setBackgroundResource(R.drawable.button_shape10_outline);
             buttonMale.setTextColor(getResources().getColor(R.color.colorAccent));
-        }
-        else if(user.getGender().equals("female")){
+            buttonFemale.setBackgroundResource(R.drawable.button_shape10_normal);
+            buttonFemale.setTextColor(getResources().getColor(R.color.black));
+        } else if (user.getGender().equals("female")) {
             buttonFemale.setBackgroundResource(R.drawable.button_shape10_outline);
             buttonFemale.setTextColor(getResources().getColor(R.color.colorAccent));
+            buttonMale.setBackgroundResource(R.drawable.button_shape10_normal);
+            buttonMale.setTextColor(getResources().getColor(R.color.black));
         }
-        if(user.getDateWith().equals("male")){
+        if (user.getDateWith().equals("male")) {
             buttonDatewithMale.setBackgroundResource(R.drawable.button_shape10_outline);
             buttonDatewithMale.setTextColor(getResources().getColor(R.color.colorAccent));
-        }
-        else if(user.getDateWith().equals("female")){
+            buttonDatewithFemale.setBackgroundResource(R.drawable.button_shape10_normal);
+            buttonDatewithFemale.setTextColor(getResources().getColor(R.color.black));
+        } else if (user.getDateWith().equals("female")) {
             buttonDatewithFemale.setBackgroundResource(R.drawable.button_shape10_outline);
             buttonDatewithFemale.setTextColor(getResources().getColor(R.color.colorAccent));
+            buttonDatewithMale.setBackgroundResource(R.drawable.button_shape10_normal);
+            buttonDatewithMale.setTextColor(getResources().getColor(R.color.black));
         }
         chipFaculty = new Chip(mainActivity);
         chipFaculty.setText(user.getFaculty());
@@ -303,19 +318,26 @@ public class AccountFragment extends Fragment {
                 R.style.ChipChoice);
         chipFaculty.setChipDrawable(chipDrawable);
         chipFaculty.setChecked(true);
+
+        chipGroupFaculty.removeAllViews();
         chipGroupFaculty.addView(chipFaculty);
 
+        for (int i = 0; i < chipGroupInterest.getChildCount(); i++) {
+            Chip chip = (Chip) chipGroupInterest.getChildAt(i);
+            chip.setVisibility(View.VISIBLE);
+            chip.setChecked(true);
+        }
         for (int i = 0; i < chipGroupInterest.getChildCount(); i++) {
             Chip chip = (Chip) chipGroupInterest.getChildAt(i);
             String chipText = chip.getText().toString();
             int flag = 0;
             Log.d("ChipText", chipText);
-            for(int j = 0; j < user.getInterests().size(); j++){
-                if(chipText.equals(user.getInterests().get(j))){
+            for (int j = 0; j < user.getInterests().size(); j++) {
+                if (chipText.equals(user.getInterests().get(j))) {
                     flag = 1;
                 }
             }
-            if(flag == 0){
+            if (flag == 0) {
                 chip.setVisibility(View.GONE);
             }
 
@@ -330,8 +352,7 @@ public class AccountFragment extends Fragment {
         userApiService.getInfo(user.get_id()).enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                if(response.isSuccessful())
-                {
+                if (response.isSuccessful()) {
                     user = response.body().getResult();
                     sharedPreferencesClient.putUserInfo("key", user);
                 }
@@ -370,14 +391,14 @@ public class AccountFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == ADD_AVATAR && resultCode  == RESULT_OK && data.getData() != null ){
+        if (requestCode == ADD_AVATAR && resultCode == RESULT_OK && data.getData() != null) {
             imgUri = data.getData();
             Bitmap bitmap;
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(mainActivity.getContentResolver(),imgUri);
+                bitmap = MediaStore.Images.Media.getBitmap(mainActivity.getContentResolver(), imgUri);
                 imageViewAvatar.setImageBitmap(bitmap);
 
-                final StorageReference storageReference = mStorageReference.child(user.getEmail()+"."+getfileextension(imgUri));
+                final StorageReference storageReference = mStorageReference.child(user.getEmail() + "." + getfileextension(imgUri));
                 storageReference.putFile(imgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -390,10 +411,11 @@ public class AccountFragment extends Fragment {
                                 userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
                                     @Override
                                     public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                                        if(response.isSuccessful()){
-                                            Log.e("TAG",response.body().getResult().toString());
+                                        if (response.isSuccessful()) {
+                                            Log.e("TAG", response.body().getResult().toString());
                                         }
                                     }
+
                                     @Override
                                     public void onFailure(Call<UserModel> call, Throwable t) {
                                         Log.e("TAG", t.getMessage());
@@ -409,10 +431,10 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    private  String getfileextension(Uri audioUri){
+    private String getfileextension(Uri audioUri) {
         ContentResolver contentResolver = mainActivity.getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return  mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(audioUri));
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(audioUri));
     }
 
 }

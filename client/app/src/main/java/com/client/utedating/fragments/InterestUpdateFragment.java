@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.client.utedating.R;
 import com.client.utedating.activities.MainActivity;
+import com.client.utedating.adapters.ViewPagerAdapter;
 import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.RetrofitClient;
@@ -33,7 +35,7 @@ import retrofit2.Response;
 
 public class InterestUpdateFragment extends Fragment {
     ChipGroup chipGroup;
-    TextView buttonSubmitInterest;
+    TextView buttonSubmitInterest, buttonCancelInterest;
     List<Integer> chipList = new ArrayList<>();
 //    List<Chip> checkedChips = new ArrayList<>();
     List<String> interests = new ArrayList<>();
@@ -64,6 +66,7 @@ public class InterestUpdateFragment extends Fragment {
 
         chipGroup = view.findViewById(R.id.chipGroupInterest);
         buttonSubmitInterest = view.findViewById(R.id.buttonSubmitInterest);
+        buttonCancelInterest = view.findViewById(R.id.buttonCancelInterest);
 
         chipGroup.setScrollbarFadingEnabled(true);
 
@@ -114,7 +117,13 @@ public class InterestUpdateFragment extends Fragment {
                         if(response.isSuccessful()){
                             Toast.makeText(mainActivity,"Cập nhật thành công", Toast.LENGTH_SHORT).show();
 
-                            mainActivity.recreate();
+//                            mainActivity.recreate();
+
+                            ViewPager viewPager =  mainActivity.findViewById(R.id.view_pager);
+                            ViewPagerAdapter viewPagerAdapter = (ViewPagerAdapter) viewPager.getAdapter();
+                            Fragment accountFragment = viewPagerAdapter.getItem(3);
+                            accountFragment.onResume();
+
                             mainActivity.findViewById(R.id.frame_Layout).setVisibility(View.GONE);
                             mainActivity.findViewById(R.id.view_pager).setVisibility(View.VISIBLE);
 
@@ -131,6 +140,17 @@ public class InterestUpdateFragment extends Fragment {
                 Log.e("TAG", user.toString());
             }
         });
+        buttonCancelInterest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ViewPager viewPager =  mainActivity.findViewById(R.id.view_pager);
+                ViewPagerAdapter viewPagerAdapter = (ViewPagerAdapter) viewPager.getAdapter();
+                Fragment accountFragment = viewPagerAdapter.getItem(3);
+                accountFragment.onResume();
 
+                mainActivity.findViewById(R.id.frame_Layout).setVisibility(View.GONE);
+                mainActivity.findViewById(R.id.view_pager).setVisibility(View.VISIBLE);
+            }
+        });
     }
 }

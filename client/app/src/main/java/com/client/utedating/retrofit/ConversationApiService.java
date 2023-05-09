@@ -1,5 +1,6 @@
 package com.client.utedating.retrofit;
 
+import com.client.utedating.models.ConversationModel;
 import com.client.utedating.models.MessageModel;
 import com.client.utedating.models.NoResultModel;
 
@@ -27,4 +28,9 @@ public interface ConversationApiService {
     @GET(route+"/getMessages/{conversationId}")
     Call<MessageModel> getMessages(@Path("conversationId") String conversationId);
 
+    @GET(route+"/getConversationsByUserId/{userId}")
+    Call<ConversationModel> getConversationByUserId(@Path("userId") String userId);
+
+    @GET(route+"/getUserMatched/{userId}")
+    Call<ConversationModel> getUserMatched(@Path("userId") String userId);
 }
