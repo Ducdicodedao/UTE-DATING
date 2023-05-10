@@ -3,7 +3,6 @@ package com.client.utedating.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +25,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.client.utedating.R;
 import com.client.utedating.adapters.ChatAdapter;
-import com.client.utedating.fragments.ConversationNotExistDialogFragment;
 import com.client.utedating.fragments.SupportBottomSheetDialogFragment;
 import com.client.utedating.models.Message;
 import com.client.utedating.models.MessageModel;
@@ -39,14 +37,12 @@ import com.client.utedating.sharedPreferences.SharedPreferencesClient;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
-import org.ocpsoft.prettytime.PrettyTime;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import io.socket.client.IO;
