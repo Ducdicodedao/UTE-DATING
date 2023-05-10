@@ -5,4 +5,14 @@
         <item name="android:windowEnterAnimation">@anim/dialog_slide_up</item>
         <item name="android:windowExitAnimation">@anim/dialog_slide_down</item>
     </style>
+
+    <style name="BottomSheetDialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetBackground</item>
+    </style>
+
+    <style name="bottomSheetBackground" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_corner_bg_support</item>
+    </style>
+
+
 </resources>

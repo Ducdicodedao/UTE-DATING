@@ -48,4 +48,7 @@ public interface UserApiService {
 
     @GET(route+"/isUserSwipedRight/{userId}/{swipedUserId}")
     Call<List<String>> getUsersAvatar(@Path("userId") String userId, @Path("swipedUserId") String swipedUserId);
+
+    @PATCH(route+"/unMatched")
+    Call<NoResultModel> unMatched(@Body Map<String, String> body);
 }

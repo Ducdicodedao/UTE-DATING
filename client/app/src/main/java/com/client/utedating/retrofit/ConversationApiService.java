@@ -33,4 +33,7 @@ public interface ConversationApiService {
 
     @GET(route+"/getUserMatched/{userId}")
     Call<ConversationModel> getUserMatched(@Path("userId") String userId);
+
+    @GET(route+"/isExist/{conversationId}")
+    Call<NoResultModel> isExist(@Path("conversationId") String conversationId);
 }

@@ -108,7 +108,7 @@ export const getConversationsByUserId = async (req, res, next) => {
             message: "Get Success",
             result: result,
         });
-    } catch {
+    } catch (error) {
         next(error);
     }
 };
@@ -145,7 +145,27 @@ export const getUserMatched = async (req, res, next) => {
             message: "Get Success",
             result: result,
         });
-    } catch {
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const isExist = async (req, res, next) => {
+    try {
+        const conversation = await Conversation.findById(
+            req.params.conversationId
+        );
+        let message;
+        if (conversation) {
+            message = "isExist";
+        } else {
+            message = "noExist";
+        }
+        res.status(200).json({
+            success: true,
+            message,
+        });
+    } catch (error) {
         next(error);
     }
 };

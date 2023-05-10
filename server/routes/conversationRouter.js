@@ -7,6 +7,7 @@ import {
     getMessages,
     getConversationsByUserId,
     getUserMatched,
+    isExist,
 } from "../controllers/conversationController.js";
 
 const router = express.Router();
@@ -20,4 +21,5 @@ router.get("/getConversationsByUserId/:userId", getConversationsByUserId);
 router.get("/getUserMatched/:userId", getUserMatched);
 router.post("/sendMessage/:conversationId", sendMessageToConversation);
 router.get("/getMessages/:conversationId", getMessages);
+router.get("/isExist/:conversationId", isExist);
 export default router;

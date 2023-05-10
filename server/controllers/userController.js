@@ -183,7 +183,7 @@ export const unMatched = async (req, res, next) => {
             success: true,
             message: "UnMatched Success",
         });
-    } catch {
+    } catch (error) {
         next(error);
     }
 };

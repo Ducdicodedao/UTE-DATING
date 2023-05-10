@@ -3,14 +3,21 @@ package com.client.utedating.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,6 +26,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.client.utedating.R;
 import com.client.utedating.adapters.ChatAdapter;
+import com.client.utedating.fragments.ConversationNotExistDialogFragment;
+import com.client.utedating.fragments.SupportBottomSheetDialogFragment;
 import com.client.utedating.models.Message;
 import com.client.utedating.models.MessageModel;
 import com.client.utedating.models.MessageSocket;
@@ -53,7 +62,7 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView recyclerViewChat;
     EditText editTextChat;
     AppCompatImageButton buttonSentMessage;
-    AppCompatImageView imageViewChatBack;
+    AppCompatImageView imageViewChatBack, imageViewSupport;
     SharedPreferencesClient sharedPreferencesClient;
     User user;
     ConversationApiService conversationApiService;
@@ -86,6 +95,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerViewChat = findViewById(R.id.recyclerViewChat);
         editTextChat = findViewById(R.id.editTextChat);
         buttonSentMessage = findViewById(R.id.buttonSentMessage);
+        imageViewSupport = findViewById(R.id.imageViewSupport);
         imageViewChatBack = findViewById(R.id.imageViewChatBack);
         buttonSentMessage.setEnabled(false);
 
@@ -150,21 +160,60 @@ public class ChatActivity extends AppCompatActivity {
         buttonSentMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Gson gson = new Gson();
-                MessageSocket messageSocket = new MessageSocket(conversationId,editTextChat.getText().toString().trim(), receiverId);
-                mSocket.emit("sendMessage",  gson.toJson(messageSocket));
-                onLoadMessage(conversationId, editTextChat.getText().toString().trim(), receiverId);
-
-                Map<String, String> body = new HashMap<>();
-
-                body.put("receiver", receiverId);
-                body.put("message", editTextChat.getText().toString().trim());
-                conversationApiService.sendMessage(conversationId, body).enqueue(new Callback<NoResultModel>() {
+                conversationApiService.isExist(conversationId).enqueue(new Callback<NoResultModel>() {
                     @Override
                     public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
                         if(response.isSuccessful()){
-                            Log.e("TAG", response.body().getMessage());
-                            editTextChat.setText("");
+                            if(response.body().getMessage().equals("noExist")){
+
+
+//                                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//                                ConversationNotExistDialogFragment dialog = new ConversationNotExistDialogFragment();
+//                                dialog.show(ft, "dialog");
+                                Dialog dialog = new Dialog(ChatActivity.this);
+                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                dialog.setContentView(R.layout.fragment_conversation_not_exist_dialog);
+                                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                dialog.getWindow().setDimAmount(0.6f);
+                                dialog.getWindow().setGravity(Gravity.CENTER);
+                                dialog.setCanceledOnTouchOutside(false);
+                                dialog.show();
+
+                                Button btnOk = dialog.findViewById(R.id.btn_ok);
+                                btnOk.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialog.dismiss();
+                                        finish();
+                                    }
+                                });
+
+                            }else{
+                                Gson gson = new Gson();
+                                MessageSocket messageSocket = new MessageSocket(conversationId,editTextChat.getText().toString().trim(), receiverId);
+                                mSocket.emit("sendMessage",  gson.toJson(messageSocket));
+                                onLoadMessage(conversationId, editTextChat.getText().toString().trim(), receiverId);
+
+                                Map<String, String> body = new HashMap<>();
+
+                                body.put("receiver", receiverId);
+                                body.put("message", editTextChat.getText().toString().trim());
+                                conversationApiService.sendMessage(conversationId, body).enqueue(new Callback<NoResultModel>() {
+                                    @Override
+                                    public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
+                                        if(response.isSuccessful()){
+                                            Log.e("TAG", response.body().getMessage());
+                                            editTextChat.setText("");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<NoResultModel> call, Throwable t) {
+                                        Log.e("TAG", t.getMessage());
+                                    }
+                                });
+                            }
                         }
                     }
 
@@ -173,9 +222,8 @@ public class ChatActivity extends AppCompatActivity {
                         Log.e("TAG", t.getMessage());
                     }
                 });
+        };});
 
-            }
-        });
 
         editTextChat.addTextChangedListener(new TextWatcher() {
             @Override
@@ -205,6 +253,20 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        imageViewSupport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SupportBottomSheetDialogFragment bottomSheet =new SupportBottomSheetDialogFragment();
+                Bundle bundle = new Bundle();
+                // Đặt giá trị cho Bundle, ví dụ:
+                bundle.putString("receiverId", receiverId);
+                bundle.putString("conversationId",conversationId );
+                // Đặt Bundle vào Fragment
+                bottomSheet.setArguments(bundle);
+                bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
             }
         });
     }
