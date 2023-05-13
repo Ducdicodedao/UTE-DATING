@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.client.utedating.R;
+import com.client.utedating.activities.FaceVerifyActivity;
 import com.client.utedating.activities.LoginGGActivity;
 import com.client.utedating.activities.MainActivity;
 import com.client.utedating.models.User;
@@ -109,6 +110,13 @@ public class AccountFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 addAvatar();
+            }
+        });
+        imageViewNotAuth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(mainActivity, FaceVerifyActivity.class);
+                startActivity(i);
             }
         });
         editTextAbout.addTextChangedListener(new TextWatcher() {

@@ -168,7 +168,7 @@ public class ChatActivity extends AppCompatActivity {
 //                                dialog.show(ft, "dialog");
                                 Dialog dialog = new Dialog(ChatActivity.this);
                                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                                dialog.setContentView(R.layout.fragment_conversation_not_exist_dialog);
+                                dialog.setContentView(R.layout.dialog_conversation_not_exist);
                                 dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                                 dialog.getWindow().setDimAmount(0.6f);
