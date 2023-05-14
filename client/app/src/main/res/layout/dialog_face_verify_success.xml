@@ -5,14 +5,14 @@
     android:orientation="vertical"
     android:background="@drawable/rounded_corner_bg_announce"
     android:padding="16dp"
-    android:layout_marginLeft="50dp"
-    android:layout_marginRight="50dp"
+    android:layout_marginLeft="48dp"
+    android:layout_marginRight="48dp"
     >
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Đoạn chat không còn tồn tại."
+        android:text="Xác minh tài khoản thành công"
         android:textColor="@android:color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -20,7 +20,7 @@
 
     <Button
         android:layout_gravity="center"
-        android:id="@+id/btn_ok"
+        android:id="@+id/btn_verifySuccess"
         android:textColor="@color/white"
         android:textAllCaps="false"
         android:layout_width="100dp"

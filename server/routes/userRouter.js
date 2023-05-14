@@ -10,6 +10,7 @@ import {
     getUsersAvatar,
     getUserMatched,
     unMatched,
+    verifyUser,
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -24,4 +25,5 @@ router.patch("/addUserMatched", addUserMatched);
 router.get("/getUsersAvatar/:userId/:swipedUserId", getUsersAvatar);
 router.get("/getUserMatched/:userId", getUserMatched);
 router.patch("/unMatched", unMatched);
+router.patch("/verifyUser/:userId", verifyUser);
 export default router;

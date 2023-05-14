@@ -187,3 +187,17 @@ export const unMatched = async (req, res, next) => {
         next(error);
     }
 };
+
+export const verifyUser = async (req, res) => {
+    try {
+        await User.findByIdAndUpdate(req.params.userId, {
+            isAuthenticated: true,
+        });
+        res.status(200).json({
+            success: true,
+            message: "Verify Success",
+        });
+    } catch (error) {
+        next(error);
+    }
+};

@@ -363,6 +363,7 @@ public class AccountFragment extends Fragment {
                 if (response.isSuccessful()) {
                     user = response.body().getResult();
                     sharedPreferencesClient.putUserInfo("key", user);
+                    Log.e("TAG", user.toString());
                 }
             }
 

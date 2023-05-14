@@ -51,4 +51,8 @@ public interface UserApiService {
 
     @PATCH(route+"/unMatched")
     Call<NoResultModel> unMatched(@Body Map<String, String> body);
+
+    @PATCH(route+"/verifyUser/{userId}")
+    Call<NoResultModel> verifyUser(@Path("userId") String userId);
+
 }

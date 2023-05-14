@@ -6,4 +6,191 @@
     android:layout_height="match_parent"
     tools:context=".activities.FaceVerifyActivity">
 
+    <ImageView
+        android:id="@+id/imageViewCloseVerify"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_baseline_close_24_grey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayoutImageFace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="100dp"
+        android:orientation="horizontal"
+        >
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewPose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <ImageView
+                android:id="@+id/imageViewPose"
+                android:layout_width="150dp"
+                android:layout_height="225dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_baseline_android_24" />
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewFace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <ImageView
+                android:id="@+id/imageViewFace"
+                android:layout_width="150dp"
+                android:layout_height="225dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_baseline_android_24" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="50dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutImageFace">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Xác minh tài khoản của bạn"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="UTE Dating sử dụng công nghệ Machine Learning để xác minh"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Để xác minh tài khoản thành công:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="- Ảnh chụp phải nhìn thẳng, rõ mặt"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="- Gương mặt phải khớp với ảnh đại diện của bạn"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutTakeCapture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        android:layout_marginTop="40dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        >
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonTakeCapture"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_shape50"
+            android:elevation="8dp"
+            android:strokeWidth="2"
+            android:strokeColor="#E8E6EA"
+            android:text="Chụp ảnh"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="*Tạo dáng như ảnh bên trên"
+            android:layout_marginLeft="20dp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linearLayoutVerify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        android:layout_marginTop="40dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:visibility="gone"
+        >
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonVerify"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_shape50"
+            android:elevation="8dp"
+            android:strokeWidth="2"
+            android:strokeColor="#E8E6EA"
+            android:text="Xác minh"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonRetake"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/button_shape50_normal"
+            android:elevation="8dp"
+            android:strokeWidth="2"
+            android:strokeColor="#E8E6EA"
+            android:text="Chụp lại"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="8dp"
+            />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
