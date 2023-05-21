@@ -42,7 +42,11 @@ public class Profile {
     @Expose
     private String gender;
 
-    public Profile(String _id, String name, String imageUrl, Integer age, String faculty, String location, String about, List<String> interests, String gender) {
+    @SerializedName("token")
+    @Expose
+    private String token;
+
+    public Profile(String _id, String name, String imageUrl, Integer age, String faculty, String location, String about, List<String> interests, String gender, String token) {
         this._id = _id;
         this.name = name;
         this.imageUrl = imageUrl;
@@ -52,6 +56,7 @@ public class Profile {
         this.about = about;
         this.interests = interests;
         this.gender = gender;
+        this.token = token;
     }
 
     public String get_id() {
@@ -124,5 +129,13 @@ public class Profile {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

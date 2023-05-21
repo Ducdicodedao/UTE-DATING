@@ -16,7 +16,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.client.utedating.R;
 import com.client.utedating.activities.MatchedActivity;
+import com.client.utedating.retrofit.NotificationApiService;
 import com.client.utedating.retrofit.RetrofitClient;
+import com.client.utedating.retrofit.RetrofitNotification;
 import com.client.utedating.retrofit.UserApiService;
 import com.client.utedating.sharedPreferences.SharedPreferencesClient;
 import com.google.android.material.chip.Chip;
@@ -32,6 +34,7 @@ import com.mindorks.placeholderview.annotations.swipe.SwipeInState;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOutState;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -59,6 +62,7 @@ public class TinderCard {
     SharedPreferencesClient sharedPreferencesClient;
     int cardCount;
 
+    NotificationApiService notificationApiService;
     public TinderCard() {
     }
 
@@ -131,6 +135,7 @@ public class TinderCard {
                                     i.putExtra("swipedUserId", mProfile.get_id());
                                     i.putExtra("userAvatar",user.getAvatar() );
                                     i.putExtra("swipedUserAvatar", mProfile.getImageUrl());
+                                    i.putExtra("swipedUserToken", mProfile.getToken());
                                     mContext.startActivity(i);
                                 }
                             }
@@ -147,6 +152,9 @@ public class TinderCard {
                             public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
                                 if (response.isSuccessful()) {
                                     Log.e("TAG", response.body().getMessage());
+
+                                    //Send notification to swiped User
+                                    sendNotification();
                                 }
                             }
 
@@ -229,9 +237,27 @@ public class TinderCard {
             if(flag == 0){
                 chip.setVisibility(android.view.View.GONE);
             }
-
         }
+    }
+    private void sendNotification() {
+        Map<String, String> notification = new HashMap<>();
+        notification.put("title", "UTE DATING");
+        notification.put("body", "Ai đó vừa mới thích bạn 💙");
+        NotificationSend notificationSend = new NotificationSend(mProfile.getToken(), notification);
+        notificationApiService = RetrofitNotification.getInstance().create(NotificationApiService.class);
+        notificationApiService.sendNotification(notificationSend).enqueue(new Callback<NotificationReceived>() {
+            @Override
+            public void onResponse(Call<NotificationReceived> call, Response<NotificationReceived> response) {
+                if (response.isSuccessful()) {
+                    Log.e("TAG", "Notification Send Successfully");
+                }
+            }
 
+            @Override
+            public void onFailure(Call<NotificationReceived> call, Throwable t) {
+                Log.e("TAG", t.getMessage());
+            }
+        });
 
     }
 }

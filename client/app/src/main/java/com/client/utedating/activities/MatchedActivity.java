@@ -12,8 +12,12 @@ import com.bumptech.glide.Glide;
 import com.client.utedating.R;
 import com.client.utedating.models.Conversation;
 import com.client.utedating.models.NoResultModel;
+import com.client.utedating.models.NotificationReceived;
+import com.client.utedating.models.NotificationSend;
 import com.client.utedating.retrofit.ConversationApiService;
+import com.client.utedating.retrofit.NotificationApiService;
 import com.client.utedating.retrofit.RetrofitClient;
+import com.client.utedating.retrofit.RetrofitNotification;
 import com.client.utedating.retrofit.UserApiService;
 
 import java.util.HashMap;
@@ -28,6 +32,8 @@ public class MatchedActivity extends AppCompatActivity {
     Button buttonCloseMatched;
 
     ConversationApiService conversationApiService;
+    NotificationApiService notificationApiService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +70,7 @@ public class MatchedActivity extends AppCompatActivity {
     }
 
     private void handleEvent() {
+        sendNotification();
         imageViewCloseMatched.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +84,7 @@ public class MatchedActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 
     private void setData() {
@@ -103,5 +111,28 @@ public class MatchedActivity extends AppCompatActivity {
         imageViewMatchedUserA = findViewById(R.id.imageViewMatchedUserA);
         imageViewMatchedUserB = findViewById(R.id.imageViewMatchedUserB);
         buttonCloseMatched = findViewById(R.id.buttonCloseMatched);
+    }
+
+    private void sendNotification() {
+        String swipedUserToken = getIntent().getStringExtra("swipedUserToken");
+        Map<String, String> notification = new HashMap<>();
+        notification.put("title", "UTE DATING");
+        notification.put("body", "Ai đó vừa mới tương hợp với bạn 💙");
+        NotificationSend notificationSend = new NotificationSend(swipedUserToken, notification);
+        notificationApiService = RetrofitNotification.getInstance().create(NotificationApiService.class);
+        notificationApiService.sendNotification(notificationSend).enqueue(new Callback<NotificationReceived>() {
+            @Override
+            public void onResponse(Call<NotificationReceived> call, Response<NotificationReceived> response) {
+                if (response.isSuccessful()) {
+                    Log.e("TAG", "Notification Send Successfully");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NotificationReceived> call, Throwable t) {
+                Log.e("TAG", t.getMessage());
+            }
+        });
+
     }
 }
