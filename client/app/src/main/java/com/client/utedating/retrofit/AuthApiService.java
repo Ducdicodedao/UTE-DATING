@@ -12,5 +12,5 @@ public interface AuthApiService {
     String route ="auth";
     @POST(route+"/signup")
     @FormUrlEncoded
-    Call<UserModel> signup(@Field("name") String name, @Field("email") String email, @Field("avatar") String avatar);
+    Call<UserModel> signup(@Field("name") String name, @Field("email") String email, @Field("avatar") String avatar, @Field("token") String token);
 }

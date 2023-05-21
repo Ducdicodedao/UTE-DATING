@@ -91,7 +91,7 @@ export const getConversationsByUserId = async (req, res, next) => {
             },
         }).populate({
             path: "participants",
-            select: "_id name avatar",
+            select: "_id name avatar token",
         });
         const result = conversations
             .map((conversation) => {
@@ -121,7 +121,7 @@ export const getUserMatched = async (req, res, next) => {
             },
         }).populate({
             path: "participants",
-            select: "_id name avatar",
+            select: "_id name avatar token",
         });
         const result = conversations
             .map((conversation) => {

@@ -213,6 +213,7 @@ public class ChatFragment extends Fragment {
                                     if (response.isSuccessful()) {
                                         Intent i = new Intent(view.getContext(), ChatActivity.class);
                                         i.putExtra("receiverId", u.get_id());
+                                        i.putExtra("receiverToken", u.getToken());
                                         i.putExtra("name", u.getName());
                                         i.putExtra("avatar", u.getAvatar());
                                         i.putExtra("conversationId", response.body());
@@ -250,6 +251,7 @@ public class ChatFragment extends Fragment {
                             Log.e("TAG", "onConversationListener");
                             Intent i = new Intent(view.getContext(), ChatActivity.class);
                             i.putExtra("receiverId", u.get_id());
+                            i.putExtra("receiverToken", u.getToken());
                             i.putExtra("name", u.getName());
                             i.putExtra("avatar", u.getAvatar());
                             i.putExtra("conversationId", conversationId);

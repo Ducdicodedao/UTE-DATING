@@ -20,7 +20,7 @@ public class User implements Serializable {
     private List<String> userSwipedRight;
     private Boolean isAuthenticated;
     private Map<String, Object> location;
-
+    private String token;
     public User() {
     }
 
@@ -144,6 +144,14 @@ public class User implements Serializable {
         this.location = location;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -162,6 +170,7 @@ public class User implements Serializable {
                 ", userSwipedRight=" + userSwipedRight +
                 ", isAuthenticated=" + isAuthenticated +
                 ", location=" + location +
+                ", token='" + token + '\'' +
                 '}';
     }
 }

@@ -30,12 +30,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
 import retrofit2.Call;
@@ -112,42 +114,47 @@ public class LoginGGActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-
-                            assert user != null;
-                            authApiService.signup(user.getDisplayName(), user.getEmail(), String.valueOf(user.getPhotoUrl())).enqueue(new Callback<UserModel>() {
+                            FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
                                 @Override
-                                public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                                    if (response.isSuccessful()) {
-                                        UserModel userModel = response.body();
-                                        User mUser = userModel.getResult();
-                                        Log.e("TAG", mUser.toString());
+                                public void onSuccess(String token) {
+                                    Log.e("TAG","FToken: "+ token);
+                                    assert user != null;
+                                    authApiService.signup(user.getDisplayName(), user.getEmail(), String.valueOf(user.getPhotoUrl()), token).enqueue(new Callback<UserModel>() {
+                                        @Override
+                                        public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                                            if (response.isSuccessful()) {
+                                                UserModel userModel = response.body();
+                                                User mUser = userModel.getResult();
+                                                Log.e("TAG", mUser.toString());
+                                                Intent intent;
+                                                if (response.body().getMessage().equals("Signin Success")) {
+                                                    if (mUser.getBirthday().equals("") || mUser.getGender().equals("") || mUser.getDateWith().equals("") || mUser.getAbout().equals("") || mUser.getFaculty().equals("") ||mUser.getInterests().size() == 0 ||mUser.getLocation() == null) {
+                                                        intent = new Intent(LoginGGActivity.this, InitialActivity.class);
+                                                    } else {
+                                                        intent = new Intent(LoginGGActivity.this, MainActivity.class);
+                                                    }
+                                                } else {
+                                                    intent = new Intent(LoginGGActivity.this, InitialActivity.class);
+                                                }
+                                                SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(LoginGGActivity.this);
+                                                sharedPreferencesClient.putUserInfo("user", mUser);
 
-                                        Intent intent;
-                                        if (response.body().getMessage().equals("Signin Success")) {
-                                            if (mUser.getBirthday().equals("") || mUser.getGender().equals("") || mUser.getDateWith().equals("") || mUser.getAbout().equals("") || mUser.getFaculty().equals("") ||mUser.getInterests().size() == 0 ||mUser.getLocation() == null) {
-                                                intent = new Intent(LoginGGActivity.this, InitialActivity.class);
-                                            } else {
-                                                intent = new Intent(LoginGGActivity.this, MainActivity.class);
+                                                startActivity(intent);
+                                                finish();
                                             }
-                                        } else {
-                                            intent = new Intent(LoginGGActivity.this, InitialActivity.class);
                                         }
-                                        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(LoginGGActivity.this);
-                                        sharedPreferencesClient.putUserInfo("user", mUser);
 
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }
+                                        @Override
+                                        public void onFailure(Call<UserModel> call, Throwable t) {
+                                            Toast.makeText(LoginGGActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
 
-                                @Override
-                                public void onFailure(Call<UserModel> call, Throwable t) {
-                                    Toast.makeText(LoginGGActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                                    finish();
+                                    //updateUI(user);
                                 }
                             });
 
-                            finish();
-                            //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());

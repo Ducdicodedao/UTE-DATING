@@ -74,6 +74,7 @@ const userSchema = new mongoose.Schema(
                 ref: "User",
             },
         ],
+        token: String,
     },
     { timestamps: true }
 );

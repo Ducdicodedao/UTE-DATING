@@ -30,9 +30,14 @@ import com.client.utedating.models.Message;
 import com.client.utedating.models.MessageModel;
 import com.client.utedating.models.MessageSocket;
 import com.client.utedating.models.NoResultModel;
+import com.client.utedating.models.NotificatiionSocket;
+import com.client.utedating.models.NotificationReceived;
+import com.client.utedating.models.NotificationSend;
 import com.client.utedating.models.User;
 import com.client.utedating.retrofit.ConversationApiService;
+import com.client.utedating.retrofit.NotificationApiService;
 import com.client.utedating.retrofit.RetrofitClient;
+import com.client.utedating.retrofit.RetrofitNotification;
 import com.client.utedating.sharedPreferences.SharedPreferencesClient;
 import com.google.gson.Gson;
 
@@ -62,8 +67,9 @@ public class ChatActivity extends AppCompatActivity {
     SharedPreferencesClient sharedPreferencesClient;
     User user;
     ConversationApiService conversationApiService;
-
+    NotificationApiService notificationApiService;
     String receiverId;
+    String receiverToken;
     String receiverName;
     String receiverAvatar;
     String conversationId;
@@ -72,6 +78,36 @@ public class ChatActivity extends AppCompatActivity {
     ChatAdapter chatAdapter;
 
     Socket mSocket;
+
+    Boolean isReceiverOffLine = true;
+    private Emitter.Listener onGetMessage = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e("TAG", "onGetMessage");
+                    JSONObject data = (JSONObject) args[0];
+                    onLoadMessage(data.optString("conversationId"), data.optString("message"), data.optString("receiverId"));
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onResultNotification = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e("TAG", "onResultNotification");
+                    JSONObject data = (JSONObject) args[0];
+                    isReceiverOffLine = data.optBoolean("result");
+                }
+            });
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,11 +134,13 @@ public class ChatActivity extends AppCompatActivity {
         sharedPreferencesClient = new SharedPreferencesClient(this);
         user = sharedPreferencesClient.getUserInfo("user");
         conversationApiService = RetrofitClient.getInstance().create(ConversationApiService.class);
+        notificationApiService = RetrofitNotification.getInstance().create(NotificationApiService.class);
     }
 
     private void setData() {
         receiverId = getIntent().getStringExtra("receiverId");
-        receiverName= getIntent().getStringExtra("name");
+        receiverToken = getIntent().getStringExtra("receiverToken");
+        receiverName = getIntent().getStringExtra("name");
         receiverAvatar = getIntent().getStringExtra("avatar");
         conversationId = getIntent().getStringExtra("conversationId");
 
@@ -115,13 +153,16 @@ public class ChatActivity extends AppCompatActivity {
                 .centerCrop()
                 .into(imageViewAvatar);
     }
-    private void setRecyclerView(){
+
+    private void setRecyclerView() {
         recyclerViewChat.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerViewChat.setHasFixedSize(true);
 
         chatAdapter = new ChatAdapter(messageList, receiverAvatar, user.get_id());
         recyclerViewChat.setAdapter(chatAdapter);
+
     }
+
     private void setSocket() {
         try {
             mSocket = IO.socket("http://10.0.2.2:5000");
@@ -131,6 +172,7 @@ public class ChatActivity extends AppCompatActivity {
 
         mSocket.connect();
         mSocket.on("getMessage", onGetMessage);
+        mSocket.on("resultNotification", onResultNotification);
         mSocket.emit("addUser", user.get_id());
     }
 
@@ -138,10 +180,13 @@ public class ChatActivity extends AppCompatActivity {
         conversationApiService.getMessages(conversationId).enqueue(new Callback<MessageModel>() {
             @Override
             public void onResponse(Call<MessageModel> call, Response<MessageModel> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     Log.e("TAG", response.body().getMessage());
                     messageList.addAll(response.body().getResult());
                     chatAdapter.notifyDataSetChanged();
+                    if(messageList.size() > 1){
+                        recyclerViewChat.smoothScrollToPosition(messageList.size() - 1);
+                    }
                 }
             }
 
@@ -152,15 +197,15 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void handleEvent(){
+    private void handleEvent() {
         buttonSentMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 conversationApiService.isExist(conversationId).enqueue(new Callback<NoResultModel>() {
                     @Override
                     public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
-                        if(response.isSuccessful()){
-                            if(response.body().getMessage().equals("noExist")){
+                        if (response.isSuccessful()) {
+                            if (response.body().getMessage().equals("noExist")) {
 
 
 //                                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -185,21 +230,29 @@ public class ChatActivity extends AppCompatActivity {
                                     }
                                 });
 
-                            }else{
+                            } else {
                                 Gson gson = new Gson();
-                                MessageSocket messageSocket = new MessageSocket(conversationId,editTextChat.getText().toString().trim(), receiverId);
-                                mSocket.emit("sendMessage",  gson.toJson(messageSocket));
+                                MessageSocket messageSocket = new MessageSocket(conversationId, editTextChat.getText().toString().trim(), receiverId);
+                                mSocket.emit("sendMessage", gson.toJson(messageSocket));
                                 onLoadMessage(conversationId, editTextChat.getText().toString().trim(), receiverId);
 
-                                Map<String, String> body = new HashMap<>();
+                                NotificatiionSocket notificatiionSocket = new NotificatiionSocket(user.get_id(), receiverId);
+                                mSocket.emit("sendNotification", gson.toJson(notificatiionSocket));
 
+                                Map<String, String> body = new HashMap<>();
                                 body.put("receiver", receiverId);
                                 body.put("message", editTextChat.getText().toString().trim());
                                 conversationApiService.sendMessage(conversationId, body).enqueue(new Callback<NoResultModel>() {
                                     @Override
                                     public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
-                                        if(response.isSuccessful()){
+                                        if (response.isSuccessful()) {
                                             Log.e("TAG", response.body().getMessage());
+                                            Log.e("TAG", "isReceiverOffLine: "+ isReceiverOffLine);
+                                            //If receiver is offline, send notification to receiver
+                                            if(isReceiverOffLine){
+                                                //Send notification
+                                                sendNotification();
+                                            }
                                             editTextChat.setText("");
                                         }
                                     }
@@ -218,7 +271,10 @@ public class ChatActivity extends AppCompatActivity {
                         Log.e("TAG", t.getMessage());
                     }
                 });
-        };});
+            }
+
+            ;
+        });
 
 
         editTextChat.addTextChangedListener(new TextWatcher() {
@@ -231,10 +287,9 @@ public class ChatActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Lấy số ký tự đang nhập
                 int length = s.toString().length();
-                if(length == 0){
+                if (length == 0) {
                     buttonSentMessage.setEnabled(false);
-                }
-                else{
+                } else {
                     buttonSentMessage.setEnabled(true);
                 }
             }
@@ -255,30 +310,17 @@ public class ChatActivity extends AppCompatActivity {
         imageViewSupport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SupportBottomSheetDialogFragment bottomSheet =new SupportBottomSheetDialogFragment();
+                SupportBottomSheetDialogFragment bottomSheet = new SupportBottomSheetDialogFragment();
                 Bundle bundle = new Bundle();
                 // Đặt giá trị cho Bundle, ví dụ:
                 bundle.putString("receiverId", receiverId);
-                bundle.putString("conversationId",conversationId );
+                bundle.putString("conversationId", conversationId);
                 // Đặt Bundle vào Fragment
                 bottomSheet.setArguments(bundle);
                 bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
             }
         });
     }
-    private Emitter.Listener onGetMessage = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.e("TAG", "onGetMessage");
-                    JSONObject data = (JSONObject) args[0];
-                    onLoadMessage(data.optString("conversationId"), data.optString("message"), data.optString("receiverId"));
-                }
-            });
-        }
-    };
 
     private void onLoadMessage(String conversationId, String message, String receiverId) {
 //        MessageSocket m = new MessageSocket(conversationId, message, receiverId);
@@ -288,18 +330,40 @@ public class ChatActivity extends AppCompatActivity {
         m.setSentAt(new Date());
 
         addMessageToList(m);
+
     }
 
-    private void addMessageToList(Message m){
+    private void addMessageToList(Message m) {
         messageList.add(m);
         chatAdapter.notifyItemInserted(messageList.indexOf(m));
         recyclerViewChat.smoothScrollToPosition(messageList.size() - 1);
     }
 
+    private void sendNotification() {
+        Map<String, String> notification = new HashMap<>();
+        notification.put("title", user.getName());
+        notification.put("body", editTextChat.getText().toString().trim());
+        Log.e("TAG", "Received Token: " + receiverToken);
+        NotificationSend notificationSend = new NotificationSend(receiverToken, notification);
+        notificationApiService.sendNotification(notificationSend).enqueue(new Callback<NotificationReceived>() {
+            @Override
+            public void onResponse(Call<NotificationReceived> call, Response<NotificationReceived> response) {
+                if (response.isSuccessful()) {
+                    Log.e("TAG", "Notification Send Successfully");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NotificationReceived> call, Throwable t) {
+                Log.e("TAG", t.getMessage());
+            }
+        });
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mSocket.emit("disconnection");
         mSocket.disconnect();
+        Log.e("TAG","ChatActivity onDestroy");
     }
 }

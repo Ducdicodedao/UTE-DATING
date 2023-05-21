@@ -5,6 +5,7 @@ import User from "../models/User.js";
 export const signin = async (req, res) => {
     try {
         const user = await User.findOne({ email: req.body.email });
+
         res.status(200).send({
             success: true,
             message: "Signin Success",
@@ -30,6 +31,7 @@ export const signup = async (req, res) => {
             name: req.body.name,
             email: req.body.email,
             avatar: req.body.avatar,
+            token: req.body.token,
         });
         await newUser.save();
         res.status(200).send({

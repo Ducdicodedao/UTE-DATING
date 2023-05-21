@@ -59,6 +59,23 @@ io.on("connection", (socket) => {
         }
     });
 
+    socket.on("sendNotification", (n) => {
+        const notification = JSON.parse(n);
+        const receiver = getUser(notification.receiverId);
+        const sender = getUser(notification.senderId);
+        if (!receiver) {
+            io.to(sender.socketId).emit("resultNotification", {
+                result: true,
+            });
+            console.log("Receiver offline, senderId: " + notification.senderId);
+        } else {
+            io.to(sender.socketId).emit("resultNotification", {
+                result: false,
+            });
+            console.log("Receiver online, senderId: " + notification.senderId);
+        }
+    });
+
     socket.on("disconnection", () => {
         console.log("User disconnect");
         removeUser(socket.id);

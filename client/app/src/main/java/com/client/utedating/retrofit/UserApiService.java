@@ -55,4 +55,6 @@ public interface UserApiService {
     @PATCH(route+"/verifyUser/{userId}")
     Call<NoResultModel> verifyUser(@Path("userId") String userId);
 
+
+
 }
