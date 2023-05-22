@@ -28,7 +28,9 @@
     <string name="facebook_app_id">6003182689807848</string>
     <string name="fb_login_protocol_scheme">fb6003182689807848</string>
     <string name="facebook_client_token">518a9a8986bdbba85084fad39ad51754</string>
-    <string name="out_text"><u>Về trang chủ</u></string>
 
+
+    <string name="out_text"><u>Về trang chủ</u></string>
+    <string name="contact_text"><u>Liên hệ với UTE DATING</u></string>
 
 </resources>

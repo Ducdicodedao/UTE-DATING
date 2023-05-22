@@ -7,6 +7,7 @@ import cors from "cors";
 import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
 import conversationRouter from "./routes/conversationRouter.js";
+import reportRouter from "./routes/reportRouter.js";
 
 const app = express();
 dotenv.config();
@@ -55,6 +56,7 @@ app.use(
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/conversation", conversationRouter);
+app.use("/api/report", reportRouter);
 app.use((err, req, res, next) => {
     const errorStatus = err.status || 500;
     const errorMessage = err.message || "Something went wrong!";

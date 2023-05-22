@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_corner_bg_announce"
+    android:padding="16dp"
+    android:layout_marginLeft="48dp"
+    android:layout_marginRight="48dp"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tài khoản của bạn tạm thời bị khóa, vì:"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"/>
+    <TextView
+        android:id="@+id/textViewReportDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Vui lòng thử lại sau"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
+        android:gravity="center"/>
+    <Button
+        android:id="@+id/btn_verifyReport"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Đã hiểu"/>
+    <TextView
+        android:id="@+id/btn_contactUTEDATING"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:text="@string/contact_text"
+        android:textColor="@color/colorPrimary"
+        />
+
+</LinearLayout>

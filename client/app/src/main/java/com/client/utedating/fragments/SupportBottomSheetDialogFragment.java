@@ -24,6 +24,7 @@ import com.client.utedating.activities.ChatActivity;
 import com.client.utedating.models.NoResultModel;
 import com.client.utedating.models.User;
 import com.client.utedating.retrofit.ConversationApiService;
+import com.client.utedating.retrofit.ReportApiService;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
 import com.client.utedating.sharedPreferences.SharedPreferencesClient;
@@ -43,13 +44,25 @@ public class SupportBottomSheetDialogFragment extends BottomSheetDialogFragment 
     LinearLayout linearLayoutUnmatched;
     LinearLayout linearLayoutConfirmUnmatched;
     AppCompatButton buttonConfirmUnmatched;
+
+//    Report Form
+    LinearLayout linearLayoutReportForm;
+    LinearLayout linearLayoutReportDetail1, linearLayoutReportDetail2, linearLayoutReportDetail3, linearLayoutReportDetail4;
+    LinearLayout linearLayoutConfirmReported;
+    AppCompatButton buttonConfirmReported;
+
+
     ChatActivity chatActivity;
 
     SharedPreferencesClient sharedPreferencesClient;
     User user;
     String receiverId;
     String conversationId;
+
     UserApiService userApiService;
+    ReportApiService reportApiService;
+
+    String reportDetail = "";
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,12 +85,6 @@ public class SupportBottomSheetDialogFragment extends BottomSheetDialogFragment 
     }
 
     private void handleEvent() {
-        linearLayoutReport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
         linearLayoutUnmatched.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,26 +116,140 @@ public class SupportBottomSheetDialogFragment extends BottomSheetDialogFragment 
         buttonConfirmUnmatched.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map<String , String > body = new HashMap<>();
-                body.put("conversationId", conversationId);
-                body.put("matchedUserId", receiverId);
-                body.put("userId", user.get_id());
-                userApiService.unMatched(body).enqueue(new Callback<NoResultModel>() {
-                    @Override
-                    public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
-                        if(response.isSuccessful()){
-                            Log.e("TAG", response.body().getMessage());
-                            chatActivity.finish();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<NoResultModel> call, Throwable t) {
-
-                    }
-                });
+                handleUnmatched();
             }
         });
+        linearLayoutReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Ẩn linearLayoutSupport
+                linearLayoutSupport.animate()
+                        .alpha(0.0f)
+                        .setDuration(500)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                linearLayoutSupport.setVisibility(View.GONE);
+                            }
+                        });
+
+                // Hiện linearLayoutReportForm
+                linearLayoutReportForm.setAlpha(0.0f);
+                linearLayoutReportForm.animate()
+                        .alpha(1.0f)
+                        .setDuration(500)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                linearLayoutReportForm.setVisibility(View.VISIBLE);
+                            }
+                        });
+            }
+        });
+
+        linearLayoutReportDetail1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseReportDetail("Tài khoản giả mạo");
+            }
+        });
+
+        linearLayoutReportDetail2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseReportDetail("Chia sẻ nôi dung không phù hợp");
+            }
+        });
+
+        linearLayoutReportDetail3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseReportDetail("Hồ sơ của người chưa đủ 18 tuổi");
+            }
+        });
+
+        linearLayoutReportDetail4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseReportDetail("Ngôn từ vi pham tiêu chuẩn cộng đồng");
+            }
+        });
+
+        buttonConfirmReported.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleSendReport();
+            }
+        });
+    }
+
+    private void handleSendReport() {
+        Map<String,String> body = new HashMap<>();
+        body.put("sender", user.get_id());
+        body.put("receiver", receiverId);
+        body.put("title", reportDetail);
+
+        reportApiService.sendReport(body).enqueue(new Callback<NoResultModel>() {
+            @Override
+            public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
+                if (response.isSuccessful()){
+                    Log.e("TAG", response.body().getMessage());
+                    handleUnmatched();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NoResultModel> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void handleUnmatched() {
+        Map<String,String> body = new HashMap<>();
+        body.put("conversationId", conversationId);
+        body.put("matchedUserId", receiverId);
+        body.put("userId", user.get_id());
+        userApiService.unMatched(body).enqueue(new Callback<NoResultModel>() {
+            @Override
+            public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
+                if(response.isSuccessful()){
+                    Log.e("TAG", response.body().getMessage());
+                    chatActivity.finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NoResultModel> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void chooseReportDetail(String detail) {
+        reportDetail = detail;
+        // Ẩn linearLayoutReportForm
+        linearLayoutReportForm.animate()
+                .alpha(0.0f)
+                .setDuration(500)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        linearLayoutReportForm.setVisibility(View.GONE);
+                    }
+                });
+
+        // Hiện linearLayoutReportForm
+        linearLayoutConfirmReported.setAlpha(0.0f);
+        linearLayoutConfirmReported.animate()
+                .alpha(1.0f)
+                .setDuration(500)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        linearLayoutConfirmReported.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 
     private void initView(View v) {
@@ -137,6 +258,16 @@ public class SupportBottomSheetDialogFragment extends BottomSheetDialogFragment 
         linearLayoutUnmatched = v.findViewById(R.id.linearLayoutUnmatched);
         linearLayoutConfirmUnmatched = v.findViewById(R.id.linearLayoutConfirmUnmatched);
         buttonConfirmUnmatched = v.findViewById(R.id.buttonConfirmUnmatched);
+
+//      Report Form
+        linearLayoutReportForm = v.findViewById(R.id.linearLayoutReportForm);
+        linearLayoutReportDetail1 = v.findViewById(R.id.linearLayoutReportDetail1);
+        linearLayoutReportDetail2 = v.findViewById(R.id.linearLayoutReportDetail2);
+        linearLayoutReportDetail3 = v.findViewById(R.id.linearLayoutReportDetail3);
+        linearLayoutReportDetail4 = v.findViewById(R.id.linearLayoutReportDetail4);
+        linearLayoutConfirmReported = v.findViewById(R.id.linearLayoutConfirmReported);
+        buttonConfirmReported = v.findViewById(R.id.buttonConfirmReported);
+
         chatActivity = (ChatActivity) getActivity();
     }
 
@@ -150,6 +281,7 @@ public class SupportBottomSheetDialogFragment extends BottomSheetDialogFragment 
             conversationId = bundle.getString("conversationId");
         }
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
+        reportApiService =RetrofitClient.getInstance().create(ReportApiService.class);
     }
 
     @Override

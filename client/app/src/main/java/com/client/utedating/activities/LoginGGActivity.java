@@ -4,20 +4,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.client.utedating.R;
+import com.client.utedating.models.Report;
 import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.AuthApiService;
+import com.client.utedating.retrofit.ReportApiService;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.sharedPreferences.SharedPreferencesClient;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
@@ -49,7 +58,10 @@ public class LoginGGActivity extends AppCompatActivity {
     GoogleSignInClient mGoogleSignInClient;
     SignInButton buttonSigninGG;
     int RC_SIGN_IN = 100;
+
     AuthApiService authApiService;
+    ReportApiService reportApiService;
+
     private FirebaseAuth mAuth;
 
     @Override
@@ -59,7 +71,7 @@ public class LoginGGActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         authApiService = RetrofitClient.getInstance().create(AuthApiService.class);
-
+        reportApiService = RetrofitClient.getInstance().create(ReportApiService.class);
         buttonSigninGG = findViewById(R.id.sign_in_button);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -126,6 +138,8 @@ public class LoginGGActivity extends AppCompatActivity {
                                                 UserModel userModel = response.body();
                                                 User mUser = userModel.getResult();
                                                 Log.e("TAG", mUser.toString());
+                                                SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(LoginGGActivity.this);
+                                                sharedPreferencesClient.putUserInfo("user", mUser);
                                                 Intent intent;
                                                 if (response.body().getMessage().equals("Signin Success")) {
                                                     if (mUser.getBirthday().equals("") || mUser.getGender().equals("") || mUser.getDateWith().equals("") || mUser.getAbout().equals("") || mUser.getFaculty().equals("") ||mUser.getInterests().size() == 0 ||mUser.getLocation() == null) {
@@ -136,11 +150,44 @@ public class LoginGGActivity extends AppCompatActivity {
                                                 } else {
                                                     intent = new Intent(LoginGGActivity.this, InitialActivity.class);
                                                 }
-                                                SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(LoginGGActivity.this);
-                                                sharedPreferencesClient.putUserInfo("user", mUser);
 
-                                                startActivity(intent);
-                                                finish();
+                                                reportApiService.checkReport(mUser.get_id()).enqueue(new Callback<Report>() {
+                                                    @Override
+                                                    public void onResponse(Call<Report> call, Response<Report> response) {
+                                                        if(!response.body().getTitle().equals("")){
+                                                            Dialog dialog = new Dialog(LoginGGActivity.this);
+                                                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                                            dialog.setContentView(R.layout.dialog_check_report);
+                                                            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                                            dialog.getWindow().setDimAmount(0.6f);
+                                                            dialog.getWindow().setGravity(Gravity.CENTER);
+                                                            dialog.setCanceledOnTouchOutside(false);
+                                                            dialog.show();
+
+                                                            TextView textViewReportDetail = dialog.findViewById(R.id.textViewReportDetail);
+                                                            Button btn_verifyReport = dialog.findViewById(R.id.btn_verifyReport);
+                                                            TextView btn_contactUTEDATING = dialog.findViewById(R.id.btn_contactUTEDATING);
+
+                                                            textViewReportDetail.setText(response.body().getTitle());
+                                                            btn_verifyReport.setOnClickListener(new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    dialog.dismiss();
+                                                                }
+                                                            });
+                                                        }
+                                                        else{
+                                                            startActivity(intent);
+                                                            finish();
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<Report> call, Throwable t) {
+                                                        Log.e("TAG", t.getMessage());
+                                                    }
+                                                });
                                             }
                                         }
 
@@ -150,7 +197,7 @@ public class LoginGGActivity extends AppCompatActivity {
                                         }
                                     });
 
-                                    finish();
+                                    //finish();
                                     //updateUI(user);
                                 }
                             });
