@@ -17,9 +17,11 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -34,16 +36,23 @@ import com.client.utedating.models.NotificatiionSocket;
 import com.client.utedating.models.NotificationReceived;
 import com.client.utedating.models.NotificationSend;
 import com.client.utedating.models.User;
+import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.ConversationApiService;
 import com.client.utedating.retrofit.NotificationApiService;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.RetrofitNotification;
+import com.client.utedating.retrofit.UserApiService;
 import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,8 +73,11 @@ public class ChatActivity extends AppCompatActivity {
     EditText editTextChat;
     AppCompatImageButton buttonSentMessage;
     AppCompatImageView imageViewChatBack, imageViewSupport;
+    LinearLayout linearLayoutUserName;
+
     SharedPreferencesClient sharedPreferencesClient;
     User user;
+    UserApiService userApiService;
     ConversationApiService conversationApiService;
     NotificationApiService notificationApiService;
     String receiverId;
@@ -129,12 +141,14 @@ public class ChatActivity extends AppCompatActivity {
         buttonSentMessage = findViewById(R.id.buttonSentMessage);
         imageViewSupport = findViewById(R.id.imageViewSupport);
         imageViewChatBack = findViewById(R.id.imageViewChatBack);
+        linearLayoutUserName = findViewById(R.id.linearLayoutUserName);
         buttonSentMessage.setEnabled(false);
 
         sharedPreferencesClient = new SharedPreferencesClient(this);
         user = sharedPreferencesClient.getUserInfo("user");
         conversationApiService = RetrofitClient.getInstance().create(ConversationApiService.class);
         notificationApiService = RetrofitNotification.getInstance().create(NotificationApiService.class);
+        userApiService = RetrofitClient.getInstance().create(UserApiService.class);
     }
 
     private void setData() {
@@ -320,6 +334,26 @@ public class ChatActivity extends AppCompatActivity {
                 bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
             }
         });
+
+        linearLayoutUserName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(ChatActivity.this);
+                dialog.setContentView(R.layout.dialog_user_profile);
+
+                setDataDialog(dialog);
+                // Thiết lập các thuộc tính cho dialog
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                dialog.getWindow().setGravity(Gravity.CENTER);
+                // Cho phép ẩn dialog khi nhấn ra ngoài
+                dialog.setCanceledOnTouchOutside(true);
+                // Hiển thị dialog
+                dialog.show();
+            }
+        });
+
+
     }
 
     private void onLoadMessage(String conversationId, String message, String receiverId) {
@@ -359,6 +393,81 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void setDataDialog(Dialog dialog){
+        ImageView imageViewAvatar = dialog.findViewById(R.id.imageViewAvatar);
+        TextView nameAgeTxt = dialog.findViewById(R.id.textViewNameAndAge);
+        TextView textViewGender = dialog.findViewById(R.id.textViewGender);
+        TextView textViewFaculty = dialog.findViewById(R.id.textViewFaculty);
+        TextView textViewLocation = dialog.findViewById(R.id.textViewLocation);
+        TextView textViewAbout = dialog.findViewById(R.id.textViewAbout);
+        ChipGroup chipGroupInterest = dialog.findViewById(R.id.chipGroupInterest);
+
+        userApiService.getInfo(receiverId).enqueue(new Callback<UserModel>() {
+            @Override
+            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                if(response.isSuccessful()){
+                    User u = response.body().getResult();
+
+                    Glide
+                            .with(dialog.getContext())
+                            .load(u.getAvatar())
+                            .centerCrop()
+                            .into(imageViewAvatar);
+
+                    nameAgeTxt.setText(u.getName() + ", " + getAge(u.getBirthday()));
+
+                    textViewGender.setText(u.getGender().equals("male") ? "♂️ Nam" : "♀️ Nữ" );
+                    textViewFaculty.setText("🎓 Khoa "+ u.getFaculty());
+                    textViewLocation.setText("📌 Cách xa "+String.valueOf(calculateDistance((List<Double>) u.getLocation().get("coordinates"),(List<Double>) user.getLocation().get("coordinates")))+"km");
+                    textViewAbout.setText(u.getAbout());
+
+                    for (int i = 0; i < chipGroupInterest.getChildCount(); i++) {
+                        Chip chip = (Chip) chipGroupInterest.getChildAt(i);
+                        String chipText = chip.getText().toString();
+                        int flag = 0;
+                        for(int j = 0; j < u.getInterests().size(); j++){
+                            if(chipText.equals(u.getInterests().get(j))){
+                                flag = 1;
+                            }
+                        }
+                        if(flag == 0){
+                            chip.setVisibility(android.view.View.GONE);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserModel> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private int getAge(String birthday) {
+        // Chuyển đổi chuỗi ngày sinh thành đối tượng LocalDate
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate dateOfBirth = LocalDate.parse(birthday, formatter);
+
+        // Tính tuổi từ ngày sinh đến ngày hiện tại
+        LocalDate currentDate = LocalDate.now();
+        int age = Period.between(dateOfBirth, currentDate).getYears();
+        return age;
+    }
+
+    public static double calculateDistance(List<Double> location1, List<Double> location2) {
+        final double RADIUS_OF_EARTH_KM = 6371;
+        double latDistance = Math.toRadians(location2.get(1) - location1.get(1));
+        double lonDistance = Math.toRadians(location2.get(0) - location1.get(0));
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(location1.get(1))) * Math.cos(Math.toRadians(location2.get(1) ))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = RADIUS_OF_EARTH_KM * c;
+        return Math.round(distance * 100.0) / 100.0;
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

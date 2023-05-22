@@ -182,7 +182,6 @@ public class LoginGGActivity extends AppCompatActivity {
                                                             finish();
                                                         }
                                                     }
-
                                                     @Override
                                                     public void onFailure(Call<Report> call, Throwable t) {
                                                         Log.e("TAG", t.getMessage());
