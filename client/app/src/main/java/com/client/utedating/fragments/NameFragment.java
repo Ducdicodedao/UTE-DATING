@@ -89,22 +89,6 @@ public class NameFragment extends Fragment {
                         .setReorderingAllowed(true)
                         .addToBackStack("name") // name can be null
                         .commit();
-//                userApiService.updateName(user.get_id(), editText.getText().toString().trim()).enqueue(new Callback<UserModel>() {
-//                    @Override
-//                    public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-//                        initialActivity.getSupportFragmentManager().beginTransaction()
-//                                .replace(R.id.fragmentContainerView, BirthdayFragment.class, null)
-//                                .setReorderingAllowed(true)
-//                                .addToBackStack("name") // name can be null
-//                                .commit();
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<UserModel> call, Throwable t) {
-//
-//                    }
-//                });
-
             }
         });
     }

@@ -66,7 +66,7 @@ public class LikedFragment extends Fragment {
     }
 
     private void fetchData() {
-        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(mainActivity);
+        sharedPreferencesClient = new SharedPreferencesClient(mainActivity);
         user = sharedPreferencesClient.getUserInfo("user");
 
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);

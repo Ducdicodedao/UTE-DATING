@@ -4,13 +4,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.client.utedating.R;
 import com.client.utedating.models.Message;
 
@@ -19,13 +19,12 @@ import org.ocpsoft.prettytime.PrettyTime;
 import java.util.List;
 import java.util.Locale;
 
-import jp.wasabeef.glide.transformations.BlurTransformation;
-
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private List<Message> messageList;
     private String avatar;
     private String receiverId;
 
+    public static final int VIEW_TYPE_LOAD_MORE = 0;
     public static final int VIEW_TYPE_SENT = 1;
     public static final int VIEW_TYPE_RECEIVED = 2;
 
@@ -40,7 +39,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v;
-        if(viewType == VIEW_TYPE_SENT)
+        if(viewType == VIEW_TYPE_LOAD_MORE)
+        {
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_load_more, parent, false);
+            return new LoadMoreViewHolder(v);
+        }
+        else if(viewType == VIEW_TYPE_SENT)
         {
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_container_right_message, parent, false);
             return new SentMessageViewHolder(v);
@@ -54,6 +58,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = messageList.get(position);
+        if(getItemViewType(position) == VIEW_TYPE_LOAD_MORE){
+            return;
+        }
         PrettyTime prettyTime = new PrettyTime(new Locale("vi"));
         String formattedTime = prettyTime.format(message.getSentAt());
 
@@ -103,7 +110,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public int getItemViewType(int position) {
-        if(messageList.get(position).getReceiver().equals(receiverId)){
+        if(messageList.get(position) == null){
+            return VIEW_TYPE_LOAD_MORE;
+        }
+        else if(messageList.get(position).getReceiver().equals(receiverId)){
             return VIEW_TYPE_RECEIVED;
         }
         else{
@@ -132,4 +142,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             textViewReceivedTime = itemView.findViewById(R.id.textViewReceivedTime);
         }
     }
+
+    public class LoadMoreViewHolder extends RecyclerView.ViewHolder{
+        ProgressBar progressBar;
+        public LoadMoreViewHolder(@NonNull View itemView) {
+            super(itemView);
+            progressBar = itemView.findViewById(R.id.progressBar);
+        }
+    }
+
+
 }
