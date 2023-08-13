@@ -9,6 +9,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -176,6 +177,13 @@ public class LoginGGActivity extends AppCompatActivity {
                                                                     dialog.dismiss();
                                                                 }
                                                             });
+                                                            btn_contactUTEDATING.setOnClickListener(new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    contactUs();
+                                                                    dialog.dismiss();
+                                                                }
+                                                            });
                                                         }
                                                         else{
                                                             startActivity(intent);
@@ -195,12 +203,10 @@ public class LoginGGActivity extends AppCompatActivity {
                                             Toast.makeText(LoginGGActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                                         }
                                     });
-
                                     //finish();
                                     //updateUI(user);
                                 }
                             });
-
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -209,13 +215,24 @@ public class LoginGGActivity extends AppCompatActivity {
                     }
                 });
     }
-//    public void saveUserInfo(User user){
-//        SharedPreferences sharedPreferences = getSharedPreferences("USERINFO", Context.MODE_PRIVATE);
-//        Gson gson = new Gson();
-//        String json = gson.toJson(user);
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putString("user", json);
-//        editor.apply();
-//    }
-
+    private void contactUs() {
+        try {
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setType("plain/text");
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"ducdevday@gmail.com"});
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "");
+            emailIntent.putExtra(Intent.EXTRA_STREAM, "");
+            emailIntent.setPackage("com.google.android.gm");
+            startActivity(emailIntent);
+        } catch (Resources.NotFoundException e) {
+            Intent sendIntentIfGmailFail = new Intent(Intent.ACTION_SEND);
+            sendIntentIfGmailFail.setType("*/*");
+            sendIntentIfGmailFail.putExtra(Intent.EXTRA_EMAIL, "info@zen-s.com");
+            sendIntentIfGmailFail.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
+            if (sendIntentIfGmailFail.resolveActivity(getPackageManager()) != null) {
+                startActivity(sendIntentIfGmailFail);
+            }
+        }
+    }
 }

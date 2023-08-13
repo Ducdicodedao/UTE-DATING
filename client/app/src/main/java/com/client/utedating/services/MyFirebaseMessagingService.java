@@ -52,22 +52,24 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         super.onNewToken(token);
         SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(getApplicationContext());
         User user = sharedPreferencesClient.getUserInfo("user");
-        user.setToken(token);
-        sharedPreferencesClient.putUserInfo("user", user);
-        UserApiService userApiService = RetrofitClient.getInstance().create(UserApiService.class);
-        userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
-            @Override
-            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                if (response.isSuccessful()) {
-                    Log.e("TAG", "Token Updated");
+        if(user != null){
+            user.setToken(token);
+            sharedPreferencesClient.putUserInfo("user", user);
+            UserApiService userApiService = RetrofitClient.getInstance().create(UserApiService.class);
+            userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
+                @Override
+                public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                    if (response.isSuccessful()) {
+                        Log.e("TAG", "Token Updated");
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<UserModel> call, Throwable t) {
-                Log.e("TAG", t.getMessage());
-            }
-        });
+                @Override
+                public void onFailure(Call<UserModel> call, Throwable t) {
+                    Log.e("TAG", t.getMessage());
+                }
+            });
+        }
     }
 
     private void showNotification(String title, String body) {

@@ -12,6 +12,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ConversationApiService {
     String route = "conversation";
@@ -27,6 +28,9 @@ public interface ConversationApiService {
 
     @GET(route+"/getMessages/{conversationId}")
     Call<MessageModel> getMessages(@Path("conversationId") String conversationId);
+
+    @GET(route+"/getMoreMessages/{conversationId}")
+    Call<MessageModel> getMoreMessages(@Path("conversationId") String conversationId, @Query("page") Integer page);
 
     @GET(route+"/getConversationsByUserId/{userId}")
     Call<ConversationModel> getConversationByUserId(@Path("userId") String userId);

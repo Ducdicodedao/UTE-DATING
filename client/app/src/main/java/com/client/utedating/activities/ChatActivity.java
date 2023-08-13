@@ -1,5 +1,6 @@
 package com.client.utedating.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -10,6 +11,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -91,7 +93,13 @@ public class ChatActivity extends AppCompatActivity {
 
     Socket mSocket;
 
+    LinearLayoutManager linearLayoutManager;
+
     Boolean isReceiverOffLine = true;
+    Integer isFirstTimeLoading = 1;
+    Boolean isLoading = false;
+    Handler handler = new Handler();
+    Integer page = 0;
     private Emitter.Listener onGetMessage = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -100,7 +108,7 @@ public class ChatActivity extends AppCompatActivity {
                 public void run() {
                     Log.e("TAG", "onGetMessage");
                     JSONObject data = (JSONObject) args[0];
-                    onLoadMessage(data.optString("conversationId"), data.optString("message"), data.optString("receiverId"));
+                     onLoadMessage(data.optString("conversationId"), data.optString("message"), data.optString("receiverId"));
                 }
             });
         }
@@ -129,7 +137,7 @@ public class ChatActivity extends AppCompatActivity {
         setData();
         setRecyclerView();
         setSocket();
-        fetchData();
+        fetchFirstData();
         handleEvent();
     }
 
@@ -169,7 +177,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void setRecyclerView() {
-        recyclerViewChat.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerViewChat.setLayoutManager(linearLayoutManager);
         recyclerViewChat.setHasFixedSize(true);
 
         chatAdapter = new ChatAdapter(messageList, receiverAvatar, user.get_id());
@@ -190,17 +199,62 @@ public class ChatActivity extends AppCompatActivity {
         mSocket.emit("addUser", user.get_id());
     }
 
-    private void fetchData() {
-        conversationApiService.getMessages(conversationId).enqueue(new Callback<MessageModel>() {
+    private void fetchFirstData() {
+        conversationApiService.getMoreMessages(conversationId, page).enqueue(new Callback<MessageModel>() {
             @Override
             public void onResponse(Call<MessageModel> call, Response<MessageModel> response) {
                 if (response.isSuccessful()) {
                     Log.e("TAG", response.body().getMessage());
-                    messageList.addAll(response.body().getResult());
+                    messageList.addAll(0, response.body().getResult());
                     chatAdapter.notifyDataSetChanged();
                     if(messageList.size() > 1){
                         recyclerViewChat.smoothScrollToPosition(messageList.size() - 1);
                     }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MessageModel> call, Throwable t) {
+                Log.e("TAG", t.getMessage());
+            }
+        });
+    }
+
+    private void fetchData() {
+//        conversationApiService.getMessages(conversationId).enqueue(new Callback<MessageModel>() {
+//            @Override
+//            public void onResponse(Call<MessageModel> call, Response<MessageModel> response) {
+//                if (response.isSuccessful()) {
+//                    Log.e("TAG", response.body().getMessage());
+//                    messageList.addAll(response.body().getResult());
+//                    chatAdapter.notifyDataSetChanged();
+//                    if(messageList.size() > 1){
+//                        recyclerViewChat.smoothScrollToPosition(messageList.size() - 1);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<MessageModel> call, Throwable t) {
+//                Log.e("TAG", t.getMessage());
+//            }
+//        });
+        conversationApiService.getMoreMessages(conversationId, page).enqueue(new Callback<MessageModel>() {
+            @Override
+            public void onResponse(Call<MessageModel> call, Response<MessageModel> response) {
+                if (response.isSuccessful()) {
+                    Log.e("TAG", response.body().getMessage());
+                    if(response.body().getResult().size() != 0){
+                        messageList.addAll(0, response.body().getResult());
+//                        chatAdapter.notifyItemRangeChanged(0, response.body().getResult().size());
+                        chatAdapter.notifyItemRangeInserted(0, response.body().getResult().size());
+                        isLoading = false;
+                        if(response.body().getResult().size() > 1){
+                            // ? Cuộn xuống 2 phần tử
+                            recyclerViewChat.smoothScrollToPosition(response.body().getResult().size() - 1 + -1);
+                        }
+                    }
+
                 }
             }
 
@@ -220,8 +274,6 @@ public class ChatActivity extends AppCompatActivity {
                     public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
                         if (response.isSuccessful()) {
                             if (response.body().getMessage().equals("noExist")) {
-
-
 //                                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 //                                ConversationNotExistDialogFragment dialog = new ConversationNotExistDialogFragment();
 //                                dialog.show(ft, "dialog");
@@ -353,6 +405,30 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        recyclerViewChat.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(!isLoading){
+                    if(linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0){
+                        // ! Tại lần đầu khi fetchData bị dính trường hợp này nên cần bỏ qua
+                        // ! Logic tạm thời xử lý như này, có thời gian sẽ tối ưu
+                        if(isFirstTimeLoading>= 3){
+                            Log.e("TAG", "findFirstCompletelyVisibleItemPosition:"+isFirstTimeLoading);
+                            isLoading = true;
+                            loadMoreMessage();
+                        }
+                        Log.e("TAG", "isFirstTimeLoading:"+isFirstTimeLoading);
+                        isFirstTimeLoading++;
+                    }
+                }
+            }
+        });
 
     }
 
@@ -474,5 +550,25 @@ public class ChatActivity extends AppCompatActivity {
         mSocket.emit("disconnection");
         mSocket.disconnect();
         Log.e("TAG","ChatActivity onDestroy");
+    }
+
+    void loadMoreMessage(){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                messageList.add(0, null);
+                chatAdapter.notifyItemInserted(0);
+                recyclerViewChat.smoothScrollToPosition(0);
+            }
+        });
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                messageList.remove(0);
+                chatAdapter.notifyItemRemoved(0);
+                page++;
+                fetchData();
+            }
+        }, 2000);
     }
 }

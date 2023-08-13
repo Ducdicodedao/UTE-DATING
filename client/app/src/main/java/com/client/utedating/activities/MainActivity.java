@@ -15,7 +15,6 @@ import android.widget.FrameLayout;
 import com.client.utedating.R;
 import com.client.utedating.adapters.ViewPagerAdapter;
 import com.client.utedating.fragments.AccountFragment;
-import com.client.utedating.fragments.ActivityFragment;
 import com.client.utedating.fragments.ChatFragment;
 import com.client.utedating.fragments.LikedFragment;
 import com.client.utedating.fragments.SwipeViewFragment;
