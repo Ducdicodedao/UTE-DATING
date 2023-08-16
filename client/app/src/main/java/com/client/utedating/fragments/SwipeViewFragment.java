@@ -129,7 +129,6 @@ public class SwipeViewFragment extends Fragment {
                 if (response.isSuccessful()) {
                     userList = response.body().getResult();
                     for (User u : userList) {
-
                         profileList.add(new Profile(u.get_id(), u.getName(), u.getAvatar(), getAge(u.getBirthday()), u.getFaculty(), String.valueOf(calculateDistance((List<Double>) u.getLocation().get("coordinates"),(List<Double>) user.getLocation().get("coordinates"))), u.getAbout(), u.getInterests(), u.getGender(), u.getToken()));
                     }
                     for (Profile profile : profileList) {

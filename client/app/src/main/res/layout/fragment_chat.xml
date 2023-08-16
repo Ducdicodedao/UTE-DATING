@@ -60,7 +60,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"/>
-
+        <TextView
+            android:id="@+id/textViewEmptyMatched"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:text="Không có tương hợp mới"
+            android:textSize="16sp"
+            android:visibility="gone"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -90,7 +99,7 @@
                     android:maxLines="1"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:text="2"
+                    android:text="0"
                     android:textColor="@color/md_white_1000"
                     android:textSize="10sp" />
 
@@ -104,8 +113,31 @@
             android:id="@+id/recyclerViewMessages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#ffffff" />
+            android:background="#ffffff"
+            />
+        <LinearLayout
+            android:id="@+id/linearLayoutEmptyMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:background="#ffffff"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+            <ImageView
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:src="@drawable/img_empty_message"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Không có tin nhắn mới"
+                android:textSize="16sp"
+                android:layout_marginTop="-30dp"
+                />
 
+        </LinearLayout>
 
     </LinearLayout>
 

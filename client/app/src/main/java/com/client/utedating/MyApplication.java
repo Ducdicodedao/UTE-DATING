@@ -3,13 +3,16 @@ package com.client.utedating;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 
 public class MyApplication extends Application {
     public static final String CHANNEL_ID = "CHANNEL_ID";
+    private static Context context;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        context = getApplicationContext();
         createChanelNotification();
     }
 
@@ -24,6 +27,8 @@ public class MyApplication extends Application {
         manager.createNotificationChannel(channel);
 //            }
     }
-
+    public static Context getContext() {
+        return context;
+    }
 
 }

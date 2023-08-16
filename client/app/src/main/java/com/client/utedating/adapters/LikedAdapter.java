@@ -45,7 +45,8 @@ public class LikedAdapter extends RecyclerView.Adapter<LikedAdapter.MyViewHolder
 //                .placeholder(R.drawable.loading_spinner)
                 .into(holder.imageViewLiked);
 
-        holder.textViewLiked.setText(user.getFaculty());
+        holder.textViewLikedName.getBackground().setAlpha(128);
+        holder.textViewLikedFaculty.getBackground().setAlpha(128);
     }
 
     @Override
@@ -57,12 +58,15 @@ public class LikedAdapter extends RecyclerView.Adapter<LikedAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView imageViewLiked;
-        TextView textViewLiked;
+        TextView textViewLikedName;
+        TextView textViewLikedFaculty;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             imageViewLiked = itemView.findViewById(R.id.imageViewLiked);
-            textViewLiked = itemView.findViewById(R.id.textViewLiked);
+            textViewLikedName = itemView.findViewById(R.id.textViewLikedName);
+            textViewLikedFaculty = itemView.findViewById(R.id.textViewLikedFaculty);
+
         }
     }
 }

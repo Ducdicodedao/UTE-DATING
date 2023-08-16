@@ -14,6 +14,19 @@ public class SharedPreferencesClient {
         this.mContext = mContext;
     }
 
+    public void setJWT(String key, String jwt){
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(MY_SHARE_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, jwt);
+        editor.apply();
+    }
+
+    public String getJWT(String key){
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(MY_SHARE_PREFERENCES, Context.MODE_PRIVATE);
+        String jwt = sharedPreferences.getString(key, "");
+        return jwt;
+    }
+
     public void putUserInfo(String key, User user){
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(MY_SHARE_PREFERENCES, Context.MODE_PRIVATE);
         Gson gson = new Gson();

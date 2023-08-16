@@ -127,9 +127,7 @@ public class TinderCard {
                             public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
                                 if(response.isSuccessful()){
                                     Log.e("TAG", response.body().getMessage());
-
                                     User user = sharedPreferencesClient.getUserInfo("user");
-
                                     Intent i = new Intent(mContext, MatchedActivity.class);
                                     i.putExtra("userId", user.get_id());
                                     i.putExtra("swipedUserId", mProfile.get_id());

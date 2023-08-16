@@ -1,16 +1,16 @@
 import express from "express";
 import {
-    getInfo,
-    updateInfo,
-    getUsersByDatewith,
-    addUserSwipedRight,
-    getUserSwipedRight,
-    isUserSwipedRight,
-    addUserMatched,
-    getUsersAvatar,
-    getUserMatched,
-    unMatched,
-    verifyUser,
+  getInfo,
+  updateInfo,
+  getUsersByDatewith,
+  addUserSwipedRight,
+  getUserSwipedRight,
+  isUserSwipedRight,
+  addUserMatched,
+  getUsersAvatar,
+  getUserMatched,
+  unMatched,
+  verifyUser,
 } from "../controllers/userController.js";
 
 const router = express.Router();

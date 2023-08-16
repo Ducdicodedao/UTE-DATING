@@ -7,9 +7,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -51,18 +54,6 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class ChatFragment extends Fragment {
-//    View rootLayout;
-//    private static final String TAG = MainActivity.class.getSimpleName();
-//    private List<MessageItem> messageList;
-//    private List<Like> likeList;
-//    private MessageListAdapter mAdapter;
-//    private String[] messages = {"Ah d'accord", "Juste par habitude en tout cas", "Hey!", "6946743263", "Give me your number, I will call you"};
-//    private int[] counts = {0, 3, 0, 0, 1};
-//    private int[] messagePictures = {R.drawable.user_woman_3, R.drawable.user_woman_4, R.drawable.user_woman_5, R.drawable.user_woman_6 , R.drawable.user_woman_7};
-//    private int[] likePictures = {R.drawable.user_woman_1, R.drawable.user_woman_2};
-//    private String[] messageNames = {"Fanelle", "Chloe", "Cynthia", "Kate", "Angele"};
-//    private String[] likeNames = {"Sophie", "Clara"};
-
     RecyclerView recyclerViewMatched;
     RecyclerView recyclerViewMessage;
 
@@ -77,6 +68,9 @@ public class ChatFragment extends Fragment {
     MatchedAdapter matchedAdapter;
     ConversationAdapter conversationAdapter;
 
+    AppCompatTextView text_count_messsage;
+    TextView textViewEmptyMatched;
+    LinearLayout linearLayoutEmptyMessage;
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -158,77 +152,48 @@ public class ChatFragment extends Fragment {
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
         conversationApiService = RetrofitClient.getInstance().create(ConversationApiService.class);
 
-//        userApiService.getUserMatched(user.get_id()).enqueue(new Callback<UsersMatchedModel>() {
-//            @Override
-//            public void onResponse(Call<UsersMatchedModel> call, Response<UsersMatchedModel> response) {
-//                if (response.isSuccessful()) {
-//                    userMatchedList = response.body().getResult().getUserMatched();
-//
-//                    matchedAdapter = new MatchedAdapter(userMatchedList, new IUserListener() {
-//                        @Override
-//                        public void onUserListener(User u) {
-//                            conversationApiService.getConversationIdByUserId(user.get_id(), u.get_id()).enqueue(new Callback<String>() {
-//                                @Override
-//                                public void onResponse(Call<String> call, Response<String> response) {
-//                                    if(response.isSuccessful()){
-//                                        Intent i = new Intent(view.getContext(), ChatActivity.class);
-//                                        i.putExtra("receiverId", u.get_id());
-//                                        i.putExtra("name", u.getName());
-//                                        i.putExtra("avatar", u.getAvatar());
-//                                        i.putExtra("conversationId", response.body());
-//                                        startActivity(i);
-//                                    }
-//                                }
-//                                @Override
-//                                public void onFailure(Call<String> call, Throwable t) {
-//                                    Log.e("TAG",t.getMessage() );
-//                                }
-//                            });
-//                        }
-//                    });
-//                    recyclerViewMatched.setAdapter(matchedAdapter);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<UsersMatchedModel> call, Throwable t) {
-//                Log.e("TAG", t.getMessage());
-//            }
-//        });
         userMatchedList.clear();
         conversationApiService.getUserMatched(user.get_id()).enqueue(new Callback<ConversationModel>() {
             @Override
             public void onResponse(Call<ConversationModel> call, Response<ConversationModel> response) {
                 if (response.isSuccessful()) {
                     List<Conversation> conversations = response.body().getResult();
-                    for (Conversation conversation : conversations) {
-                        userMatchedList.add(conversation.getParticipants().get(0));
+                    if(conversations.size()  == 0){
+                        textViewEmptyMatched.setVisibility(View.VISIBLE);
+                        recyclerViewMatched.setVisibility(View.GONE);
                     }
-                    matchedAdapter = new MatchedAdapter(userMatchedList, new IUserListener() {
-                        @Override
-                        public void onUserListener(User u) {
-                            conversationApiService.getConversationIdByUserId(user.get_id(), u.get_id()).enqueue(new Callback<String>() {
-                                @Override
-                                public void onResponse(Call<String> call, Response<String> response) {
-                                    if (response.isSuccessful()) {
-                                        Intent i = new Intent(view.getContext(), ChatActivity.class);
-                                        i.putExtra("receiverId", u.get_id());
-                                        i.putExtra("receiverToken", u.getToken());
-                                        i.putExtra("name", u.getName());
-                                        i.putExtra("avatar", u.getAvatar());
-                                        i.putExtra("conversationId", response.body());
-                                        startActivity(i);
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<String> call, Throwable t) {
-                                    Log.e("TAG", t.getMessage());
-                                }
-                            });
+                    else{
+                        textViewEmptyMatched.setVisibility(View.GONE);
+                        recyclerViewMatched.setVisibility(View.VISIBLE);
+                        for (Conversation conversation : conversations) {
+                            userMatchedList.add(conversation.getParticipants().get(0));
                         }
-                    });
-                    recyclerViewMatched.setAdapter(matchedAdapter);
+                        matchedAdapter = new MatchedAdapter(userMatchedList, new IUserListener() {
+                            @Override
+                            public void onUserListener(User u) {
+                                conversationApiService.getConversationIdByUserId(user.get_id(), u.get_id()).enqueue(new Callback<String>() {
+                                    @Override
+                                    public void onResponse(Call<String> call, Response<String> response) {
+                                        if (response.isSuccessful()) {
+                                            Intent i = new Intent(view.getContext(), ChatActivity.class);
+                                            i.putExtra("receiverId", u.get_id());
+                                            i.putExtra("receiverToken", u.getToken());
+                                            i.putExtra("name", u.getName());
+                                            i.putExtra("avatar", u.getAvatar());
+                                            i.putExtra("conversationId", response.body());
+                                            startActivity(i);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<String> call, Throwable t) {
+                                        Log.e("TAG", t.getMessage());
+                                    }
+                                });
+                            }
+                        });
+                        recyclerViewMatched.setAdapter(matchedAdapter);
+                    }
                 }
             }
 
@@ -242,23 +207,30 @@ public class ChatFragment extends Fragment {
             @Override
             public void onResponse(Call<ConversationModel> call, Response<ConversationModel> response) {
                 if (response.isSuccessful()) {
-                    Log.e("TAG", response.body().getMessage());
                     conversationList = response.body().getResult();
-                    Log.e("TAG", conversationList.size() + "");
-                    conversationAdapter = new ConversationAdapter(conversationList, user.get_id(), new IConversationListener() {
-                        @Override
-                        public void onConversationListener(User u, String conversationId) {
-                            Log.e("TAG", "onConversationListener");
-                            Intent i = new Intent(view.getContext(), ChatActivity.class);
-                            i.putExtra("receiverId", u.get_id());
-                            i.putExtra("receiverToken", u.getToken());
-                            i.putExtra("name", u.getName());
-                            i.putExtra("avatar", u.getAvatar());
-                            i.putExtra("conversationId", conversationId);
-                            startActivity(i);
-                        }
-                    });
-                    recyclerViewMessage.setAdapter(conversationAdapter);
+                    text_count_messsage.setText(conversationList.size()+"");
+                    if(conversationList.size() == 0){
+                        linearLayoutEmptyMessage.setVisibility(View.VISIBLE);
+                        recyclerViewMessage.setVisibility(View.GONE);
+                    }
+                    else {
+                        linearLayoutEmptyMessage.setVisibility(View.GONE);
+                        recyclerViewMessage.setVisibility(View.VISIBLE);
+                        conversationAdapter = new ConversationAdapter(conversationList, user.get_id(), new IConversationListener() {
+                            @Override
+                            public void onConversationListener(User u, String conversationId) {
+                                Log.e("TAG", "onConversationListener");
+                                Intent i = new Intent(view.getContext(), ChatActivity.class);
+                                i.putExtra("receiverId", u.get_id());
+                                i.putExtra("receiverToken", u.getToken());
+                                i.putExtra("name", u.getName());
+                                i.putExtra("avatar", u.getAvatar());
+                                i.putExtra("conversationId", conversationId);
+                                startActivity(i);
+                            }
+                        });
+                        recyclerViewMessage.setAdapter(conversationAdapter);
+                    }
                 }
             }
 
@@ -272,6 +244,9 @@ public class ChatFragment extends Fragment {
     private void initView(View view) {
         recyclerViewMatched = view.findViewById(R.id.recyclerViewMatched);
         recyclerViewMessage = view.findViewById(R.id.recyclerViewMessages);
+        text_count_messsage = view.findViewById(R.id.text_count_messsage);
+        textViewEmptyMatched = view.findViewById(R.id.textViewEmptyMatched);
+        linearLayoutEmptyMessage = view.findViewById(R.id.linearLayoutEmptyMessage);
 
         LinearLayoutManager layoutManagerMatched = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewMatched.setLayoutManager(layoutManagerMatched);
