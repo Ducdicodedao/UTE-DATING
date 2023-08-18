@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.client.utedating.R;
 import com.client.utedating.activities.MainActivity;
@@ -33,6 +34,7 @@ import retrofit2.Response;
 public class LikedFragment extends Fragment {
     List<User> userList;
     RecyclerView recyclerViewLiked;
+    LinearLayout linearLayoutEmptyLiked;
     LikedAdapter adapter;
 
     UserApiService userApiService;
@@ -75,8 +77,16 @@ public class LikedFragment extends Fragment {
             public void onResponse(Call<UsersLikedModel> call, Response<UsersLikedModel> response) {
                 if(response.isSuccessful()){
                     userList = response.body().getResult().getUserSwipedRight();
-                    adapter = new LikedAdapter(userList);
-                    recyclerViewLiked.setAdapter(adapter);
+                    if(userList.size() == 0){
+                        linearLayoutEmptyLiked.setVisibility(View.VISIBLE);
+                        recyclerViewLiked.setVisibility(View.GONE);
+                    }
+                    else{
+                        linearLayoutEmptyLiked.setVisibility(View.GONE);
+                        recyclerViewLiked.setVisibility(View.VISIBLE);
+                        adapter = new LikedAdapter(userList);
+                        recyclerViewLiked.setAdapter(adapter);
+                    }
                 }
             }
 
@@ -90,6 +100,7 @@ public class LikedFragment extends Fragment {
 
     private void initView(View view) {
         recyclerViewLiked = view.findViewById(R.id.recyclerViewLiked);
+        linearLayoutEmptyLiked = view.findViewById(R.id.linearLayoutEmptyLiked);
         recyclerViewLiked.setLayoutManager( new GridLayoutManager(view.getContext(), 2, GridLayoutManager.VERTICAL, false));
         recyclerViewLiked.setHasFixedSize(true);
         mainActivity = (MainActivity) getActivity();

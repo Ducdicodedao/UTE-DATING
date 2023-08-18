@@ -62,13 +62,22 @@ const userSchema = new mongoose.Schema(
                 type: [Number],
             },
         },
+        // Id của người mình tương hợp
         userMatched: [
             {
                 type: mongoose.Schema.ObjectId,
                 ref: "User",
             },
         ],
+        // Id của người đã quẹt phải mình
         userSwipedRight: [
+            {
+                type: mongoose.Schema.ObjectId,
+                ref: "User",
+            },
+        ],
+        // Id của người mình đã quẹt trái
+        userSwipedLeft: [
             {
                 type: mongoose.Schema.ObjectId,
                 ref: "User",

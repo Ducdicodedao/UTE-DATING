@@ -18,6 +18,7 @@ public class User implements Serializable {
     private List<String> interests;
     private List<String> userMatched;
     private List<String> userSwipedRight;
+    private List<String> userSwipedLeft;
     private Boolean isAuthenticated;
     private Map<String, Object> location;
     private String token;
@@ -127,7 +128,13 @@ public class User implements Serializable {
     public void setUserSwipedRight(List<String> userSwipedRight) {
         this.userSwipedRight = userSwipedRight;
     }
+    public List<String> getUserSwipedLeft() {
+        return userSwipedLeft;
+    }
 
+    public void setUserSwipedLeft(List<String> userSwipedLeft) {
+        this.userSwipedLeft = userSwipedLeft;
+    }
     public Boolean getAuthenticated() {
         return isAuthenticated;
     }
@@ -173,4 +180,6 @@ public class User implements Serializable {
                 ", token='" + token + '\'' +
                 '}';
     }
+
+
 }

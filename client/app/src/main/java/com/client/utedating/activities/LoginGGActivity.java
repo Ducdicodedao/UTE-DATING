@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import com.client.utedating.R;
 import com.client.utedating.models.Report;
+import com.client.utedating.models.ReportModel;
+import com.client.utedating.models.SignUpModel;
 import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.AuthApiService;
@@ -132,15 +134,88 @@ public class LoginGGActivity extends AppCompatActivity {
                                 public void onSuccess(String token) {
                                     Log.e("TAG","FToken: "+ token);
                                     assert user != null;
-                                    authApiService.signup(user.getDisplayName(), user.getEmail(), String.valueOf(user.getPhotoUrl()), token).enqueue(new Callback<UserModel>() {
+//                                    authApiService.signup(user.getDisplayName(), user.getEmail(), String.valueOf(user.getPhotoUrl()), token).enqueue(new Callback<UserModel>() {
+//                                        @Override
+//                                        public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+//                                            if (response.isSuccessful()) {
+//                                                UserModel userModel = response.body();
+//                                                User mUser = userModel.getResult();
+//                                                Log.e("TAG", mUser.toString());
+//                                                SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(LoginGGActivity.this);
+//                                                sharedPreferencesClient.putUserInfo("user", mUser);
+//                                                Intent intent;
+//                                                if (response.body().getMessage().equals("Signin Success")) {
+//                                                    if (mUser.getBirthday().equals("") || mUser.getGender().equals("") || mUser.getDateWith().equals("") || mUser.getAbout().equals("") || mUser.getFaculty().equals("") ||mUser.getInterests().size() == 0 ||mUser.getLocation() == null) {
+//                                                        intent = new Intent(LoginGGActivity.this, InitialActivity.class);
+//                                                    } else {
+//                                                        intent = new Intent(LoginGGActivity.this, MainActivity.class);
+//                                                    }
+//                                                } else {
+//                                                    intent = new Intent(LoginGGActivity.this, InitialActivity.class);
+//                                                }
+//
+//                                                reportApiService.checkReport(mUser.get_id()).enqueue(new Callback<Report>() {
+//                                                    @Override
+//                                                    public void onResponse(Call<Report> call, Response<Report> response) {
+//                                                        if(!response.body().getTitle().equals("")){
+//                                                            Dialog dialog = new Dialog(LoginGGActivity.this);
+//                                                            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                                                            dialog.setContentView(R.layout.dialog_check_report);
+//                                                            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                                                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//                                                            dialog.getWindow().setDimAmount(0.6f);
+//                                                            dialog.getWindow().setGravity(Gravity.CENTER);
+//                                                            dialog.setCanceledOnTouchOutside(false);
+//                                                            dialog.show();
+//
+//                                                            TextView textViewReportDetail = dialog.findViewById(R.id.textViewReportDetail);
+//                                                            Button btn_verifyReport = dialog.findViewById(R.id.btn_verifyReport);
+//                                                            TextView btn_contactUTEDATING = dialog.findViewById(R.id.btn_contactUTEDATING);
+//
+//                                                            textViewReportDetail.setText(response.body().getTitle());
+//                                                            btn_verifyReport.setOnClickListener(new View.OnClickListener() {
+//                                                                @Override
+//                                                                public void onClick(View v) {
+//                                                                    dialog.dismiss();
+//                                                                }
+//                                                            });
+//                                                            btn_contactUTEDATING.setOnClickListener(new View.OnClickListener() {
+//                                                                @Override
+//                                                                public void onClick(View v) {
+//                                                                    contactUs();
+//                                                                    dialog.dismiss();
+//                                                                }
+//                                                            });
+//                                                        }
+//                                                        else{
+//                                                            startActivity(intent);
+//                                                            finish();
+//                                                        }
+//                                                    }
+//                                                    @Override
+//                                                    public void onFailure(Call<Report> call, Throwable t) {
+//                                                        Log.e("TAG", t.getMessage());
+//                                                    }
+//                                                });
+//                                            }
+//                                        }
+//
+//                                        @Override
+//                                        public void onFailure(Call<UserModel> call, Throwable t) {
+//                                            Toast.makeText(LoginGGActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+//                                        }
+//                                    });
+                                    authApiService.signup(user.getDisplayName(), user.getEmail(), String.valueOf(user.getPhotoUrl()), token).enqueue(new Callback<SignUpModel>() {
                                         @Override
-                                        public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                                        public void onResponse(Call<SignUpModel> call, Response<SignUpModel> response) {
                                             if (response.isSuccessful()) {
-                                                UserModel userModel = response.body();
-                                                User mUser = userModel.getResult();
+                                                SignUpModel signUpModel = response.body();
+                                                User mUser = signUpModel.getResult();
+                                                Log.e("TAG", "JwtToken:"+ signUpModel.getJwtToken());
                                                 Log.e("TAG", mUser.toString());
                                                 SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(LoginGGActivity.this);
                                                 sharedPreferencesClient.putUserInfo("user", mUser);
+                                                sharedPreferencesClient.setJWT("jwt", signUpModel.getJwtToken());
                                                 Intent intent;
                                                 if (response.body().getMessage().equals("Signin Success")) {
                                                     if (mUser.getBirthday().equals("") || mUser.getGender().equals("") || mUser.getDateWith().equals("") || mUser.getAbout().equals("") || mUser.getFaculty().equals("") ||mUser.getInterests().size() == 0 ||mUser.getLocation() == null) {
@@ -152,10 +227,10 @@ public class LoginGGActivity extends AppCompatActivity {
                                                     intent = new Intent(LoginGGActivity.this, InitialActivity.class);
                                                 }
 
-                                                reportApiService.checkReport(mUser.get_id()).enqueue(new Callback<Report>() {
+                                                reportApiService.checkReport(mUser.get_id()).enqueue(new Callback<ReportModel>() {
                                                     @Override
-                                                    public void onResponse(Call<Report> call, Response<Report> response) {
-                                                        if(!response.body().getTitle().equals("")){
+                                                    public void onResponse(Call<ReportModel> call, Response<ReportModel> response) {
+                                                        if(response.body().getExist()){
                                                             Dialog dialog = new Dialog(LoginGGActivity.this);
                                                             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                                             dialog.setContentView(R.layout.dialog_check_report);
@@ -170,7 +245,7 @@ public class LoginGGActivity extends AppCompatActivity {
                                                             Button btn_verifyReport = dialog.findViewById(R.id.btn_verifyReport);
                                                             TextView btn_contactUTEDATING = dialog.findViewById(R.id.btn_contactUTEDATING);
 
-                                                            textViewReportDetail.setText(response.body().getTitle());
+                                                            textViewReportDetail.setText(response.body().getReport().getTitle());
                                                             btn_verifyReport.setOnClickListener(new View.OnClickListener() {
                                                                 @Override
                                                                 public void onClick(View v) {
@@ -191,15 +266,15 @@ public class LoginGGActivity extends AppCompatActivity {
                                                         }
                                                     }
                                                     @Override
-                                                    public void onFailure(Call<Report> call, Throwable t) {
-                                                        Log.e("TAG", t.getMessage());
+                                                    public void onFailure(Call<ReportModel> call, Throwable t) {
+                                                        Log.e("TAG","checkReport: "+ t.getMessage());
                                                     }
                                                 });
                                             }
                                         }
 
                                         @Override
-                                        public void onFailure(Call<UserModel> call, Throwable t) {
+                                        public void onFailure(Call<SignUpModel> call, Throwable t) {
                                             Toast.makeText(LoginGGActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                                         }
                                     });

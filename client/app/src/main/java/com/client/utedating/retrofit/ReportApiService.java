@@ -2,6 +2,7 @@ package com.client.utedating.retrofit;
 
 import com.client.utedating.models.NoResultModel;
 import com.client.utedating.models.Report;
+import com.client.utedating.models.ReportModel;
 
 import java.util.Map;
 
@@ -18,6 +19,6 @@ public interface ReportApiService {
     Call<NoResultModel> sendReport(@Body Map<String, String> body);
 
     @GET(route+"/checkReport/{userId}")
-    Call<Report> checkReport(@Path("userId") String userId);
+    Call<ReportModel> checkReport(@Path("userId") String userId);
 
 }

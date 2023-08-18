@@ -8,15 +8,18 @@ import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
 import conversationRouter from "./routes/conversationRouter.js";
 import reportRouter from "./routes/reportRouter.js";
+import { isAuth } from "./utils.js";
 
 const app = express();
 dotenv.config();
 
 const connect = async () => {
     try {
-        // node > 17 => 127.0.0.1 else localhost
-        // await mongoose.connect("mongodb://127.0.0.1:27017/CNTT"); //process.env.MONGO //mongodb://localhost:27017/web-ec
-        mongoose.connect("mongodb://127.0.0.1:27017/UTEDATING"); //process.env.MONGO //mongodb://localhost:27017/web-ec
+        const db = process.env.DATABASE.replace(
+            "<password>",
+            process.env.DATABASE_PASSWORD
+        );
+        mongoose.connect(db); // mongodb://127.0.0.1:27017/UTEDATING
         console.log("Connected to mongoDB.");
     } catch (error) {
         throw error;
@@ -54,9 +57,9 @@ app.use(
 );
 
 app.use("/api/auth", authRouter);
-app.use("/api/user", userRouter);
-app.use("/api/conversation", conversationRouter);
-app.use("/api/report", reportRouter);
+app.use("/api/user", isAuth, userRouter);
+app.use("/api/conversation", isAuth, conversationRouter);
+app.use("/api/report", isAuth, reportRouter);
 app.use((err, req, res, next) => {
     const errorStatus = err.status || 500;
     const errorMessage = err.message || "Something went wrong!";

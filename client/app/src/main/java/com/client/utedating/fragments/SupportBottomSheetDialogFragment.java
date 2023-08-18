@@ -188,7 +188,7 @@ public class SupportBottomSheetDialogFragment extends BottomSheetDialogFragment 
         body.put("sender", user.get_id());
         body.put("receiver", receiverId);
         body.put("title", reportDetail);
-
+        Log.e("TAG", "SendReport");
         reportApiService.sendReport(body).enqueue(new Callback<NoResultModel>() {
             @Override
             public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
