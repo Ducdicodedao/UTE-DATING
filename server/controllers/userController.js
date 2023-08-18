@@ -36,28 +36,49 @@ export const getInfo = async (req, res, next) => {
 export const getUsersByDatewith = async (req, res, next) => {
     try {
         const user = await User.findOne({ _id: req.params.userId });
-        const users = await User.find({
+        let users = await User.find({
             _id: { $ne: req.params.userId },
             gender: user.dateWith,
             userSwipedRight: { $nin: [req.params.userId] },
             userMatched: { $nin: [req.params.userId] },
+            _id: { $nin: user.userSwipedLeft },
         });
-        // const result = users.filter((user) => {
-        //     return user.userSwipedRight.every(
-        //         (swipedUser) => swipedUser._id !== user._id
-        //     );
-        // });
+        if (users.length == 0) {
+            await User.updateOne(
+                { _id: req.body.userId },
+                {
+                    userSwipedLeft: [],
+                }
+            );
+            users = await User.find({
+                _id: { $ne: req.params.userId },
+                gender: user.dateWith,
+                userSwipedRight: { $nin: [req.params.userId] },
+                userMatched: { $nin: [req.params.userId] },
+            });
+        }
+        // Trộn ngẫu nhiên danh sách người dùng
+        const shuffledUsers = shuffleArray(users);
+
         res.status(200).send({
             success: true,
             message: "Get Success",
-            result: users,
+            result: shuffledUsers,
         });
     } catch (err) {
         console.error(err.message);
         next(err);
     }
 };
-
+// Hàm trộn mảng ngẫu nhiên
+function shuffleArray(array) {
+    const shuffled = array.slice();
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
 export const isUserSwipedRight = async (req, res, next) => {
     try {
         const user = await User.findOne({ _id: req.params.userId });
@@ -72,6 +93,24 @@ export const isUserSwipedRight = async (req, res, next) => {
     }
 };
 
+// Thêm id người bị quẹt trái vào tài khoản bản thân
+export const addUserSwipedLeft = async (req, res, next) => {
+    try {
+        await User.updateOne(
+            { _id: req.body.userId },
+            { $push: { userSwipedLeft: req.body.swipedUserId } }
+        );
+        res.status(200).send({
+            success: true,
+            message: "Add UserSwipedLeft Success",
+        });
+    } catch (err) {
+        console.error(err.message);
+        next(err);
+    }
+};
+
+// Thêm id bản thân vào tài khoản người được quẹt phải
 export const addUserSwipedRight = async (req, res, next) => {
     try {
         await User.updateOne(

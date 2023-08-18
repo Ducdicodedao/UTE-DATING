@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.client.utedating.R;
 import com.client.utedating.models.Report;
+import com.client.utedating.models.ReportModel;
 import com.client.utedating.models.SignUpModel;
 import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
@@ -226,10 +227,10 @@ public class LoginGGActivity extends AppCompatActivity {
                                                     intent = new Intent(LoginGGActivity.this, InitialActivity.class);
                                                 }
 
-                                                reportApiService.checkReport(mUser.get_id()).enqueue(new Callback<Report>() {
+                                                reportApiService.checkReport(mUser.get_id()).enqueue(new Callback<ReportModel>() {
                                                     @Override
-                                                    public void onResponse(Call<Report> call, Response<Report> response) {
-                                                        if(!response.body().getTitle().equals("")){
+                                                    public void onResponse(Call<ReportModel> call, Response<ReportModel> response) {
+                                                        if(response.body().getExist()){
                                                             Dialog dialog = new Dialog(LoginGGActivity.this);
                                                             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                                             dialog.setContentView(R.layout.dialog_check_report);
@@ -244,7 +245,7 @@ public class LoginGGActivity extends AppCompatActivity {
                                                             Button btn_verifyReport = dialog.findViewById(R.id.btn_verifyReport);
                                                             TextView btn_contactUTEDATING = dialog.findViewById(R.id.btn_contactUTEDATING);
 
-                                                            textViewReportDetail.setText(response.body().getTitle());
+                                                            textViewReportDetail.setText(response.body().getReport().getTitle());
                                                             btn_verifyReport.setOnClickListener(new View.OnClickListener() {
                                                                 @Override
                                                                 public void onClick(View v) {
@@ -265,8 +266,8 @@ public class LoginGGActivity extends AppCompatActivity {
                                                         }
                                                     }
                                                     @Override
-                                                    public void onFailure(Call<Report> call, Throwable t) {
-                                                        Log.e("TAG", t.getMessage());
+                                                    public void onFailure(Call<ReportModel> call, Throwable t) {
+                                                        Log.e("TAG","checkReport: "+ t.getMessage());
                                                     }
                                                 });
                                             }

@@ -97,6 +97,19 @@ public class TinderCard {
             cardCount++;
             sharedPreferencesClient.setCardCount("cardcount", cardCount);
         }
+        userApiService.addUserSwipedLeft(mBody).enqueue(new Callback<NoResultModel>() {
+            @Override
+            public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
+                if(response.isSuccessful()){
+                    Log.e("TAG", response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NoResultModel> call, Throwable t) {
+                Log.e("TAG", t.getMessage());
+            }
+        });
     }
 
     @SwipeCancelState

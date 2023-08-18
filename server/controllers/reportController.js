@@ -3,6 +3,7 @@ import Report from "../models/Report.js";
 export const sendReport = async (req, res, next) => {
     try {
         const report = new Report(req.body);
+        console.log("Send report");
         await report.save();
         res.status(200).send({
             success: true,
@@ -23,10 +24,20 @@ export const checkReport = async (req, res, next) => {
         });
         //Create empty report to check condition in android
         if (!report) {
-            report = new Report({ title: "" });
-            await report.save();
+            res.status(200).send({
+                success: true,
+                message: "No Exist Report",
+                result: report,
+                isExist: false,
+            });
+            return;
         }
-        res.status(200).send(report);
+        res.status(200).send({
+            success: true,
+            message: "Exist Report",
+            result: report,
+            isExist: true,
+        });
     } catch (err) {
         console.error(err.message);
         next(err);

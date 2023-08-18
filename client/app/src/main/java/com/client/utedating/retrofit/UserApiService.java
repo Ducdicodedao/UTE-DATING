@@ -40,6 +40,9 @@ public interface UserApiService {
     @PATCH(route+"/addUserSwipedRight")
     Call<NoResultModel> addUserSwipedRight(@Body Map<String, String> body);
 
+    @PATCH(route+"/addUserSwipedLeft")
+    Call<NoResultModel> addUserSwipedLeft(@Body Map<String, String> body);
+
     @GET(route+"/getUserSwipedRight/{userId}")
     Call<UsersLikedModel> getUserSwipedRight(@Path("userId") String userId);
 
