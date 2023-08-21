@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +17,10 @@ import com.client.utedating.R;
 import com.client.utedating.activities.MainActivity;
 import com.client.utedating.adapters.LikedAdapter;
 import com.client.utedating.models.User;
-import com.client.utedating.models.UserLiked;
 import com.client.utedating.models.UsersLikedModel;
-import com.client.utedating.models.UsersModel;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 
 import java.util.List;
 
@@ -38,7 +35,6 @@ public class LikedFragment extends Fragment {
     LikedAdapter adapter;
 
     UserApiService userApiService;
-    SharedPreferencesClient sharedPreferencesClient;
     User user;
 
     MainActivity mainActivity;
@@ -68,8 +64,7 @@ public class LikedFragment extends Fragment {
     }
 
     private void fetchData() {
-        sharedPreferencesClient = new SharedPreferencesClient(mainActivity);
-        user = sharedPreferencesClient.getUserInfo("user");
+        user = MySharedPreferences.getUserInfo(getActivity(),"user");
 
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
         userApiService.getUserSwipedRight(user.get_id()).enqueue(new Callback<UsersLikedModel>() {

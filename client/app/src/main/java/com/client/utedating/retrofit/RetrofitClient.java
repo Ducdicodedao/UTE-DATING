@@ -3,8 +3,7 @@ package com.client.utedating.retrofit;
 import androidx.annotation.NonNull;
 
 import com.client.utedating.MyApplication;
-import com.client.utedating.activities.LoginGGActivity;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -25,10 +24,8 @@ public class RetrofitClient {
         @Override
         public Response intercept(@NonNull Chain chain) throws IOException {
             Request original = chain.request();
-            // Lấy JWT từ lưu trữ (SharedPreferences hoặc Redux store)
-            SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(MyApplication.getContext());
 
-            String jwt = sharedPreferencesClient.getJWT("jwt");
+            String jwt = MySharedPreferences.getStringSharedPreference(MyApplication.getContext(),"jwt");
             // Thêm Header Authorization
             Request request = original.newBuilder()
                     .header("Authorization", "Bearer " + jwt)

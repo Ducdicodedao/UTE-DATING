@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.client.utedating.R;
 import com.client.utedating.events.IUserListener;
-import com.client.utedating.models.Like;
 import com.client.utedating.models.User;
 
 import java.util.List;
@@ -41,6 +40,7 @@ public class MatchedAdapter extends RecyclerView.Adapter<MatchedAdapter.MyViewHo
 
         Glide.with(holder.itemView.getContext())
                 .load(user.getAvatar())
+                .placeholder(R.drawable.img_holder)
                 .into(holder.likeImage);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

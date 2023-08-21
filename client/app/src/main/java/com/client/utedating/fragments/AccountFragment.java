@@ -37,7 +37,7 @@ import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipDrawable;
@@ -71,7 +71,6 @@ public class AccountFragment extends Fragment {
 
     Integer ADD_AVATAR = 2;
     Uri imgUri;
-    SharedPreferencesClient sharedPreferencesClient;
     StorageReference mStorageReference;
     private FirebaseAuth mAuth;
 
@@ -204,9 +203,8 @@ public class AccountFragment extends Fragment {
     }
 
     private void handleSaveAbout() {
-        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(mainActivity);
         user.setAbout(editTextAbout.getText().toString().trim());
-        sharedPreferencesClient.putUserInfo("user", user);
+        MySharedPreferences.putUserInfo(getActivity(), "user", user);
 
         textViewSaveAbout.setVisibility(View.INVISIBLE);
 
@@ -228,8 +226,7 @@ public class AccountFragment extends Fragment {
 
     private void handleLogout() {
         mAuth.signOut();
-        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(mainActivity);
-        sharedPreferencesClient.putUserInfo("user", null);
+        MySharedPreferences.putUserInfo(getActivity(),"user", null);
         Intent i = new Intent(mainActivity, LoginGGActivity.class);
         startActivity(i);
         mainActivity.finish();
@@ -286,6 +283,7 @@ public class AccountFragment extends Fragment {
                 .with(mainActivity)
                 .load(user.getAvatar())
                 .centerCrop()
+                .placeholder(R.drawable.img_holder3)
                 .into(imageViewAvatar);
 
         textViewName.setText(user.getName());
@@ -354,15 +352,14 @@ public class AccountFragment extends Fragment {
 
     private void fetchData() {
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
-        sharedPreferencesClient = new SharedPreferencesClient(mainActivity);
-        user = sharedPreferencesClient.getUserInfo("user");
+        user = MySharedPreferences.getUserInfo(getActivity(), "user");
 
         userApiService.getInfo(user.get_id()).enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                 if (response.isSuccessful()) {
                     user = response.body().getResult();
-                    sharedPreferencesClient.putUserInfo("key", user);
+                    MySharedPreferences.putUserInfo(getActivity(),"key", user);
                     Log.e("TAG", user.toString());
                 }
             }
@@ -415,7 +412,7 @@ public class AccountFragment extends Fragment {
                             @Override
                             public void onSuccess(Uri uriImage) {
                                 user.setAvatar(String.valueOf(uriImage));
-                                sharedPreferencesClient.putUserInfo("user", user);
+                                MySharedPreferences.putUserInfo(getActivity(), "user", user);
 
                                 userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
                                     @Override

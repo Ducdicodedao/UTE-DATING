@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="48dp"
         android:text="Quay Lại"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="30sp"
-        android:layout_marginEnd="30sp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginTop="48dp"
         android:text="Cập nhật"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
@@ -39,19 +39,18 @@
 
     <TextView
         android:id="@+id/i_am_a"
-        android:layout_width="295dp"
-        android:layout_height="51dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonCancelFaculty"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginLeft="42dp"
+        android:layout_marginTop="16dp"
         android:gravity="top"
         android:lineSpacingExtra="10sp"
         android:text="Bạn học khoa nào"
         android:textColor="@color/black"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        />
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipGroupFaculty"
@@ -59,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/i_am_a"
         android:layout_marginLeft="40dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="40dp"
         app:selectionRequired="true"
         app:singleSelection="true">
@@ -143,13 +142,6 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip_12"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Đào tạo CLC" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_13"
             style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

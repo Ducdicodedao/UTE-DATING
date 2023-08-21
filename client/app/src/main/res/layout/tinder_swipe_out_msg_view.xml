@@ -18,5 +18,6 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/dislike"
-        app:lottie_repeatMode="reverse" />
+        app:lottie_repeatMode="reverse"
+        />
 </LinearLayout>

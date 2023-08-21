@@ -1,9 +1,12 @@
 package com.client.utedating.fragments;
 
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
@@ -12,17 +15,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.client.utedating.R;
 import com.client.utedating.activities.InitialActivity;
 import com.client.utedating.models.User;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class NameFragment extends Fragment {
-    FloatingActionButton floating_button_SubmitName;
+    AppCompatButton buttonConfirm;
+    TextView textView, textViewStep;
     EditText editText;
     InitialActivity initialActivity;
 
@@ -45,12 +50,17 @@ public class NameFragment extends Fragment {
 
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
 
-        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-        User user = sharedPreferencesClient.getUserInfo("user");
+        User user = MySharedPreferences.getUserInfo(getActivity(),"user");
+        textViewStep = view.findViewById(R.id.textViewStep);
+        textView = view.findViewById(R.id.textView);
+        textView.setText("Xin chào "+ user.getName());
 
-        floating_button_SubmitName = view.findViewById(R.id.floating_button_SubmitName);
+        Shader shader = new LinearGradient(0,0,0,textViewStep.getLineHeight(),
+                getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent), Shader.TileMode.REPEAT);
+        textViewStep.getPaint().setShader(shader);
+
+        buttonConfirm = view.findViewById(R.id.buttonConfirm);
         editText = view.findViewById(R.id.editTextName);
-
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -60,10 +70,9 @@ public class NameFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!s.toString().trim().equals("")) {
-//                    floating_button_GoToBirthDay.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.black));
-                    floating_button_SubmitName.setImageResource(R.drawable.ic_baseline_chevron_right_24_white);
+                    buttonConfirm.setEnabled(true);
                 } else {
-
+                    buttonConfirm.setEnabled(false);
                 }
             }
 
@@ -75,15 +84,14 @@ public class NameFragment extends Fragment {
 
 
         initialActivity = (InitialActivity) getActivity();
-        floating_button_SubmitName.setOnClickListener(new View.OnClickListener() {
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (editText.getText().toString().trim().equals(""))
                     return;
 
                 user.setName(editText.getText().toString().trim());
-                SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-                sharedPreferencesClient.putUserInfo("user", user);
+                MySharedPreferences.putUserInfo(getActivity(),"user", user);
                 initialActivity.getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainerView, BirthdayFragment.class, null)
                         .setReorderingAllowed(true)

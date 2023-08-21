@@ -51,6 +51,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         Glide
                 .with(holder.itemView.getContext())
                 .load(receiver.getAvatar())
+                .placeholder(R.drawable.img_holder)
                 .into(holder.thumbnail);
         if(conversation.getLastMessage().getReceiver().equals(senderId)){
             holder.layout_dot_indicator.setVisibility(View.VISIBLE);

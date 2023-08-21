@@ -4,22 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.DatewithFragment">
+    <TextView
+        android:id="@+id/textViewStep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="48dp"
+        android:text="Bước 4/8"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/i_am_a"
-        android:layout_width="295dp"
-        android:layout_height="51dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewStep"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="40dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="104dp"
-        android:text="Bạn muốn thấy ai"
-        android:textSize="34sp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:lineSpacingExtra="10sp"
+        android:layout_marginTop="16dp"
         android:gravity="top"
-        />
+        android:lineSpacingExtra="10sp"
+        android:text="Bạn muốn thấy ai"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonFemale"
@@ -32,7 +41,7 @@
         android:layout_below="@+id/i_am_a"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="40dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="40dp"
         android:textAllCaps="false"
         />
@@ -56,20 +65,19 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonSubmitDatewith"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginBottom="40dp"
+        android:paddingVertical="12dp"
         android:background="@drawable/button_shape50"
-        android:text="Tiếp theo"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        android:textColor="@color/white"
         android:elevation="8dp"
         android:strokeWidth="2"
         android:strokeColor="#E8E6EA"
-        android:layout_height="58dp"
-        android:layout_below="@+id/buttonMale"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="250dp"
-        android:layout_marginRight="40dp"
+        android:text="Xác nhận"
         android:textAllCaps="false"
-        />
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

@@ -17,14 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.client.utedating.R;
-import com.client.utedating.activities.InitialActivity;
 import com.client.utedating.activities.MainActivity;
 import com.client.utedating.adapters.ViewPagerAdapter;
 import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,8 +59,7 @@ public class DatewithUpdateFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
 
-        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(mainActivity);
-        User user = sharedPreferencesClient.getUserInfo("user");
+        User user = MySharedPreferences.getUserInfo(getActivity(), "user");
         if (user.getDateWith().equals("female")) {
             buttonFemale.setBackgroundResource(R.drawable.button_shape10);
             int color = ContextCompat.getColor(mainActivity, R.color.white);
@@ -128,11 +126,10 @@ public class DatewithUpdateFragment extends Fragment {
             public void onClick(View v) {
                 if (gender.equals(""))
                     return;
-                SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-                User user = sharedPreferencesClient.getUserInfo("user");
+                User user = MySharedPreferences.getUserInfo(getActivity(),"user");
 
                 user.setDateWith(gender);
-                sharedPreferencesClient.putUserInfo("user", user);
+                MySharedPreferences.putUserInfo(getActivity(),"user", user);
 
                 userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
                     @Override

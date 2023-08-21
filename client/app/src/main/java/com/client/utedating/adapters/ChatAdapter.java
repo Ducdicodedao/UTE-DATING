@@ -85,6 +85,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             Glide
                     .with(holder.itemView.getContext())
                     .load(avatar)
+                    .placeholder(R.drawable.img_holder)
                     .into(((ReceivedMessageViewHolder) holder).imageViewAvatarReceived);
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {

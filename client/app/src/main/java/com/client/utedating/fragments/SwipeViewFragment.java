@@ -3,9 +3,7 @@ package com.client.utedating.fragments;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +20,11 @@ import com.client.utedating.models.Profile;
 import com.client.utedating.models.SubTinderCard;
 import com.client.utedating.models.TinderCard;
 import com.client.utedating.models.User;
-import com.client.utedating.models.UserModel;
 import com.client.utedating.models.UsersModel;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MyModal;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
@@ -44,9 +42,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SwipeViewFragment extends Fragment {
-
-
-    SharedPreferencesClient sharedPreferencesClient;
     User user;
     List<User> userList = new ArrayList<>();
     List<Profile> profileList = new ArrayList<>();
@@ -56,7 +51,7 @@ public class SwipeViewFragment extends Fragment {
     private FloatingActionButton fabBack, fabLike, fabSkip, fabSuperLike, fabBoost;
     private SwipePlaceHolderView mSwipeView;
     private Context mContext;
-
+    MyModal myModal;
     public SwipeViewFragment() {
         // Required empty public constructor
     }
@@ -98,6 +93,7 @@ public class SwipeViewFragment extends Fragment {
         //Ngăn không cho người dùng lướt nữa
         //mSwipeView.lockViews();
 
+        myModal = new MyModal(getActivity());
         fetchData();
 
 //        mSwipeView.getBuilder().getSwipePlaceHolderView().setFlingListener(new OnCardSwipedListener() {
@@ -118,11 +114,11 @@ public class SwipeViewFragment extends Fragment {
     }
 
     private void fetchData() {
+        myModal.show();
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
-        sharedPreferencesClient = new SharedPreferencesClient(mainActivity);
-        user = sharedPreferencesClient.getUserInfo("user");
+        user = MySharedPreferences.getUserInfo(getActivity(),"user");
 
-        sharedPreferencesClient.setCardCount("cardcount", 0);
+        MySharedPreferences.setIntSharedPreference(getActivity(),"cardcount", 0);
         userApiService.getUsersByDatewith(user.get_id()).enqueue(new Callback<UsersModel>() {
             @Override
             public void onResponse(Call<UsersModel> call, Response<UsersModel> response) {
@@ -139,11 +135,12 @@ public class SwipeViewFragment extends Fragment {
                     }
                     mSwipeView.addView(new SubTinderCard());
                 }
+                myModal.cancel();
             }
 
             @Override
             public void onFailure(Call<UsersModel> call, Throwable t) {
-
+                myModal.cancel();
             }
         });
 

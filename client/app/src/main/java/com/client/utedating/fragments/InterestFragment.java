@@ -1,5 +1,7 @@
 package com.client.utedating.fragments;
 
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,12 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.client.utedating.R;
 import com.client.utedating.activities.InitialActivity;
 import com.client.utedating.models.User;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -24,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 
 public class InterestFragment extends Fragment {
@@ -33,6 +35,7 @@ public class InterestFragment extends Fragment {
     List<Integer> chipList = new ArrayList<>();
     List<String> interests = new ArrayList<>();
     InitialActivity initialActivity;
+    TextView textViewStep;
     public InterestFragment() {
         // Required empty public constructor
     }
@@ -49,8 +52,11 @@ public class InterestFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initialActivity = (InitialActivity) getActivity();
         chipGroup = view.findViewById(R.id.chipGroupInterest);
-
         buttonSubmitInterest = view.findViewById(R.id.buttonSubmitInterest);
+        textViewStep = view.findViewById(R.id.textViewStep);
+        Shader shader = new LinearGradient(0,0,0,textViewStep.getLineHeight(),
+                getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent), Shader.TileMode.REPEAT);
+        textViewStep.getPaint().setShader(shader);
 
         chipGroup.setScrollbarFadingEnabled(true);
 
@@ -94,11 +100,10 @@ public class InterestFragment extends Fragment {
                     Chip chip = view.findViewById(checkedChipId);
                     interests.add(chip.getText().toString());
                 }
-                SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-                User user = sharedPreferencesClient.getUserInfo("user");
+                User user = MySharedPreferences.getUserInfo(getActivity(),"user");
 
                 user.setInterests(interests);
-                sharedPreferencesClient.putUserInfo("user", user);
+                MySharedPreferences.putUserInfo(getActivity(),"user", user);
 
                 initialActivity.getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainerView, LocationFragment.class, null)

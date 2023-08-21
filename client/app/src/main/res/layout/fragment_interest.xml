@@ -6,32 +6,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.InterestFragment"
     >
+    <TextView
+        android:id="@+id/textViewStep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="48dp"
+        android:text="Bước 6/8"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/i_am_a"
-        android:layout_width="295dp"
-        android:layout_height="51dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewStep"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="16dp"
         android:gravity="top"
         android:lineSpacingExtra="10sp"
         android:text="Bạn thích điều gì"
         android:textColor="@color/black"
-        android:textSize="34sp"
-        android:textStyle="bold"
+        android:textSize="24sp"
 
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewNoted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/i_am_a"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="28dp"
+        android:text="Bạn có thể chọn tối đa 5 sở thích"
+        android:textColor="@color/colorPrimary"
         />
 
     <ScrollView
         android:id="@+id/recyclerViewInterest"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="12dp"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
         android:layout_width="match_parent"
         android:layout_height="340dp"
-        android:layout_below="@+id/i_am_a"
+        android:layout_below="@+id/textViewNoted"
         android:scrollbars="vertical"
         >
         <com.google.android.material.chip.ChipGroup
@@ -45,12 +66,12 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chạy bộ" />
+                android:text="Chạy bộ 👟" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_2"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Gym"
+                android:text="Gym 💪"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -58,7 +79,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_3"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Cầu lông"
+                android:text="Cầu lông 🏸"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -66,205 +87,227 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_4"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Bóng đá"
+                android:text="Bóng đá ⚽"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_5"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Vẽ"
+                android:text="Vẽ 🎨"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_6"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Làm đẹp"
+                android:text="Làm đẹp 💄"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_7"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Chụp ảnh"
+                android:text="Chụp ảnh 📸"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_8"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Viết lách"
+                android:text="Viết lách ✒️"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_9"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Sinh tố lúa mạch"
+                android:text="Sinh tố lúa mạch 🍺"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_10"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Cà phê"
+                android:text="Cà phê ☕"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_11"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Trà sữa"
+                android:text="Trà sữa 🧋"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_12"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Cocktail"
+                android:text="Cocktail 🍸"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_13"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Nấu ăn"
+                android:text="Nấu ăn 🍳"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_14"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Đi dạo"
+                android:text="Đi dạo 🚶🏼‍♂️"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_15"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Du lịch"
+                android:text="Du lịch ✈️"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_16"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Xem phim"
+                android:text="Xem phim 🍿"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_17"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Xem concerts"
+                android:text="Xem concerts 🎫"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_18"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Karaoke"
+                android:text="Karaoke 🎤"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_19"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Nghe nhạc"
+                android:text="Nghe nhạc 🎧"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_20"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Chơi game"
+                android:text="Chơi game 🎮"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_21"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Wibu"
+                android:text="Wibu 🍡"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_22"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Chó"
+                android:text="Chó 🐶"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_23"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Mèo"
+                android:text="Mèo 😸"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_24"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Câu cá"
+                android:text="Câu cá 🦈"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_25"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Đến trường"
+                android:text="Đến trường 🏫"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_26"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Phượt"
+                android:text="Phượt 🏍️"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_27"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Bún bò"
+                android:text="Mì cay 🍜"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_28"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Mì Cay"
+                android:text="Kẹo 🍭"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip_29"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Rap"
+                android:text="Kem 🍧"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_30"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:text="Chocolate 🍫"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_31"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:text="Pizza 🍕"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_32"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:text="Salad 🥗"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
         </com.google.android.material.chip.ChipGroup>
     </ScrollView>
 
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonSubmitInterest"
         android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:layout_below="@+id/recyclerViewInterest"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginRight="40dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginBottom="40dp"
+        android:paddingVertical="12dp"
         android:background="@drawable/button_shape50"
         android:elevation="8dp"
         android:strokeWidth="2"
         android:strokeColor="#E8E6EA"
-        android:text="Tiếp theo"
+        android:text="Xác nhận"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

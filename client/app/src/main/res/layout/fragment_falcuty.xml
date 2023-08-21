@@ -6,22 +6,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.FacultyFragment"
     >
+    <TextView
+        android:id="@+id/textViewStep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="48dp"
+        android:text="Bước 5/8"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/i_am_a"
-        android:layout_width="295dp"
-        android:layout_height="51dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewStep"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginLeft="42dp"
+        android:layout_marginTop="16dp"
         android:gravity="top"
         android:lineSpacingExtra="10sp"
         android:text="Bạn học khoa nào"
         android:textColor="@color/black"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        />
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipGroupFaculty"
@@ -29,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/i_am_a"
         android:layout_marginLeft="40dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
         android:layout_marginRight="40dp"
         app:selectionRequired="true"
         app:singleSelection="true">
@@ -116,32 +125,25 @@
             style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Đào tạo CLC" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_13"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="Đào tạo quốc tế" />
     </com.google.android.material.chip.ChipGroup>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonSubmitFaculty"
         android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:layout_below="@+id/chipGroupFaculty"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginRight="40dp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginBottom="40dp"
+        android:paddingVertical="12dp"
         android:background="@drawable/button_shape50"
         android:elevation="8dp"
         android:strokeWidth="2"
         android:strokeColor="#E8E6EA"
-        android:text="Tiếp theo"
+        android:text="Xác nhận"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

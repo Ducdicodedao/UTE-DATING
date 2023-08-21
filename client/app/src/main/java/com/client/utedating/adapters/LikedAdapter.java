@@ -42,7 +42,7 @@ public class LikedAdapter extends RecyclerView.Adapter<LikedAdapter.MyViewHolder
                 .load(user.getAvatar())
                 //Độ mờ 25, thu nhỏ ảnh đi 0 lần
                 .apply(RequestOptions.bitmapTransform(new BlurTransformation(100, 1)))
-//                .placeholder(R.drawable.loading_spinner)
+                .placeholder(R.drawable.img_holder)
                 .into(holder.imageViewLiked);
 
         holder.textViewLikedName.getBackground().setAlpha(128);

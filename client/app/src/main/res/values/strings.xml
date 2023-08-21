@@ -32,5 +32,10 @@
 
     <string name="out_text"><u>Về trang chủ</u></string>
     <string name="contact_text"><u>Liên hệ với UTE DATING</u></string>
-
+    <string name="title1">Swipe</string>
+    <string name="desc1">View photo, bio, personality question, and mutual friends &amp; followers</string>
+    <string name="title2">Matches</string>
+    <string name="desc2">We match you with people that have a large array of similar interests.</string>
+    <string name="title3">Date</string>
+    <string name="desc3">Don\'t wait anymore, find your soul mate right now</string>
 </resources>
