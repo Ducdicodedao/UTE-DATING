@@ -1,5 +1,7 @@
 package com.client.utedating.fragments;
 
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,16 +14,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.client.utedating.R;
 import com.client.utedating.activities.InitialActivity;
 import com.client.utedating.models.User;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 
 public class DatewithFragment extends Fragment {
     Button buttonFemale, buttonMale;
     Button buttonSubmitDatewith;
-
+    TextView textViewStep;
     InitialActivity initialActivity;
     String gender = "";
 
@@ -42,7 +45,10 @@ public class DatewithFragment extends Fragment {
         buttonFemale = view.findViewById(R.id.buttonFemale);
         buttonMale = view.findViewById(R.id.buttonMale);
         buttonSubmitDatewith = view.findViewById(R.id.buttonSubmitDatewith);
-
+        textViewStep = view.findViewById(R.id.textViewStep);
+        Shader shader = new LinearGradient(0,0,0,textViewStep.getLineHeight(),
+                getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent), Shader.TileMode.REPEAT);
+        textViewStep.getPaint().setShader(shader);
         initialActivity = (InitialActivity) getActivity();
 
         buttonFemale.setOnClickListener(new View.OnClickListener() {
@@ -93,11 +99,10 @@ public class DatewithFragment extends Fragment {
             public void onClick(View v) {
                 if (gender.equals(""))
                     return;
-                SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-                User user = sharedPreferencesClient.getUserInfo("user");
+                User user = MySharedPreferences.getUserInfo(getActivity(), "user");
 
                 user.setDateWith(gender);
-                sharedPreferencesClient.putUserInfo("user", user);
+                MySharedPreferences.putUserInfo(getActivity(), "user", user);
 
                 initialActivity.getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainerView, FacultyFragment.class, null)

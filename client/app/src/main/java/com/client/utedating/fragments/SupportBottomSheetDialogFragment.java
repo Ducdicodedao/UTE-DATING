@@ -2,16 +2,11 @@ package com.client.utedating.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
-import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,11 +18,10 @@ import com.client.utedating.R;
 import com.client.utedating.activities.ChatActivity;
 import com.client.utedating.models.NoResultModel;
 import com.client.utedating.models.User;
-import com.client.utedating.retrofit.ConversationApiService;
 import com.client.utedating.retrofit.ReportApiService;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.HashMap;
@@ -54,7 +48,6 @@ public class SupportBottomSheetDialogFragment extends BottomSheetDialogFragment 
 
     ChatActivity chatActivity;
 
-    SharedPreferencesClient sharedPreferencesClient;
     User user;
     String receiverId;
     String conversationId;
@@ -272,8 +265,7 @@ public class SupportBottomSheetDialogFragment extends BottomSheetDialogFragment 
     }
 
     private void setData(View view) {
-        sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-        user = sharedPreferencesClient.getUserInfo("user");
+        user = MySharedPreferences.getUserInfo(getActivity(), "user");
         Bundle bundle = getArguments();
         if (bundle != null) {
             // Lấy giá trị từ Bundle, ví dụ:

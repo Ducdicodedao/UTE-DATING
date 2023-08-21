@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.LoginGGActivity"
+    android:background="@drawable/gradient_bg"
+    >
+    <ImageView
+        android:id="@+id/icon_ute"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/icon_ute_white"
+        android:layout_centerInParent="true"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/icon_ute"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-40dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="powered by "
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ducdevday"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            />
+    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progressBav"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="35dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/white" />
+</RelativeLayout>

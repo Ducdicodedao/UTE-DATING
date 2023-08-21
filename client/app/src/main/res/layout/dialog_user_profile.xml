@@ -20,7 +20,7 @@
                 android:id="@+id/imageViewAvatar"
                 android:layout_width="match_parent"
                 android:layout_height="600dp"
-                android:src="@drawable/ic_baseline_android_24"
+                android:src="@drawable/img_holder2"
                 />
         </androidx.cardview.widget.CardView>
 

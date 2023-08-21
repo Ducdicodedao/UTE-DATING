@@ -11,19 +11,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.client.utedating.R;
-import com.client.utedating.activities.InitialActivity;
 import com.client.utedating.activities.MainActivity;
 import com.client.utedating.adapters.ViewPagerAdapter;
 import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -62,8 +60,7 @@ public class FacultyUpdateFragment extends Fragment {
         buttonSubmitFaculty = view.findViewById(R.id.buttonSubmitFaculty);
         buttonCancelFaculty = view.findViewById(R.id.buttonCancelFaculty);
 
-        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-        User user = sharedPreferencesClient.getUserInfo("user");
+        User user = MySharedPreferences.getUserInfo(getActivity(),"user");
 
         for(int i = 0; i < chipGroup.getChildCount(); i++){
             Chip checkedChip =(Chip) chipGroup.getChildAt(i);
@@ -91,7 +88,7 @@ public class FacultyUpdateFragment extends Fragment {
                 }
 
                 user.setFaculty(chip.getText().toString());
-                sharedPreferencesClient.putUserInfo("user", user);
+                MySharedPreferences.putUserInfo(getActivity(), "user", user);
 
                 userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
                     @Override

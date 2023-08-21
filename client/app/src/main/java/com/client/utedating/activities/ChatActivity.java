@@ -1,12 +1,5 @@
 package com.client.utedating.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -19,12 +12,18 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.client.utedating.R;
@@ -44,7 +43,7 @@ import com.client.utedating.retrofit.NotificationApiService;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.RetrofitNotification;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.gson.Gson;
@@ -77,7 +76,6 @@ public class ChatActivity extends AppCompatActivity {
     AppCompatImageView imageViewChatBack, imageViewSupport;
     LinearLayout linearLayoutUserName;
 
-    SharedPreferencesClient sharedPreferencesClient;
     User user;
     UserApiService userApiService;
     ConversationApiService conversationApiService;
@@ -152,8 +150,7 @@ public class ChatActivity extends AppCompatActivity {
         linearLayoutUserName = findViewById(R.id.linearLayoutUserName);
         buttonSentMessage.setEnabled(false);
 
-        sharedPreferencesClient = new SharedPreferencesClient(this);
-        user = sharedPreferencesClient.getUserInfo("user");
+        user = MySharedPreferences.getUserInfo(ChatActivity.this, "user");
         conversationApiService = RetrofitClient.getInstance().create(ConversationApiService.class);
         notificationApiService = RetrofitNotification.getInstance().create(NotificationApiService.class);
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
@@ -173,6 +170,7 @@ public class ChatActivity extends AppCompatActivity {
                 .with(this)
                 .load(receiverAvatar)
                 .centerCrop()
+                .placeholder(R.drawable.img_holder)
                 .into(imageViewAvatar);
     }
 
@@ -489,6 +487,7 @@ public class ChatActivity extends AppCompatActivity {
                             .with(dialog.getContext())
                             .load(u.getAvatar())
                             .centerCrop()
+                            .placeholder(R.drawable.img_holder2)
                             .into(imageViewAvatar);
 
                     nameAgeTxt.setText(u.getName() + ", " + getAge(u.getBirthday()));

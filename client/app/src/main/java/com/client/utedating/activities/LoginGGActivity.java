@@ -3,12 +3,10 @@ package com.client.utedating.activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -18,28 +16,25 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.client.utedating.R;
-import com.client.utedating.models.Report;
 import com.client.utedating.models.ReportModel;
 import com.client.utedating.models.SignUpModel;
 import com.client.utedating.models.User;
-import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.AuthApiService;
 import com.client.utedating.retrofit.ReportApiService;
 import com.client.utedating.retrofit.RetrofitClient;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
-import com.google.android.gms.auth.api.identity.BeginSignInRequest;
-import com.google.android.gms.auth.api.identity.Identity;
-import com.google.android.gms.auth.api.identity.SignInClient;
+import com.client.utedating.utils.MyModal;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -50,7 +45,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.gson.Gson;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,14 +53,15 @@ import retrofit2.Response;
 public class LoginGGActivity extends AppCompatActivity {
     private static final String TAG = "LoginGGActivity";
     GoogleSignInClient mGoogleSignInClient;
-    SignInButton buttonSigninGG;
+    AppCompatButton buttonSigninGG;
+    Animation scaleAnimation;
     int RC_SIGN_IN = 100;
 
     AuthApiService authApiService;
     ReportApiService reportApiService;
 
     private FirebaseAuth mAuth;
-
+    MyModal myModal;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +71,7 @@ public class LoginGGActivity extends AppCompatActivity {
         authApiService = RetrofitClient.getInstance().create(AuthApiService.class);
         reportApiService = RetrofitClient.getInstance().create(ReportApiService.class);
         buttonSigninGG = findViewById(R.id.sign_in_button);
+        scaleAnimation = AnimationUtils.loadAnimation(this, R.anim.button_scale);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -83,13 +79,26 @@ public class LoginGGActivity extends AppCompatActivity {
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
+//        checkIsLogIn();
+        myModal = new MyModal(LoginGGActivity.this);
         buttonSigninGG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buttonSigninGG.startAnimation(scaleAnimation);
+                myModal.show();
                 signIn();
             }
         });
+    }
+
+    private void checkIsLogIn() {
+        User mUser = MySharedPreferences.getUserInfo(LoginGGActivity.this, "user");
+        FirebaseUser Fuser = mAuth.getCurrentUser();
+        if (Fuser != null && !mUser.getBirthday().equals("") && !mUser.getGender().equals("") && !mUser.getDateWith().equals("") && !mUser.getAbout().equals("") && !mUser.getFaculty().equals("") && mUser.getInterests().size() != 0 && mUser.getLocation() != null) {
+            Intent intent = new Intent(LoginGGActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void signIn() {
@@ -213,9 +222,8 @@ public class LoginGGActivity extends AppCompatActivity {
                                                 User mUser = signUpModel.getResult();
                                                 Log.e("TAG", "JwtToken:"+ signUpModel.getJwtToken());
                                                 Log.e("TAG", mUser.toString());
-                                                SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(LoginGGActivity.this);
-                                                sharedPreferencesClient.putUserInfo("user", mUser);
-                                                sharedPreferencesClient.setJWT("jwt", signUpModel.getJwtToken());
+                                                MySharedPreferences.putUserInfo(LoginGGActivity.this, "user", mUser);
+                                                MySharedPreferences.setStringSharedPreference(LoginGGActivity.this, "jwt", signUpModel.getJwtToken());
                                                 Intent intent;
                                                 if (response.body().getMessage().equals("Signin Success")) {
                                                     if (mUser.getBirthday().equals("") || mUser.getGender().equals("") || mUser.getDateWith().equals("") || mUser.getAbout().equals("") || mUser.getFaculty().equals("") ||mUser.getInterests().size() == 0 ||mUser.getLocation() == null) {
@@ -231,6 +239,7 @@ public class LoginGGActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onResponse(Call<ReportModel> call, Response<ReportModel> response) {
                                                         if(response.body().getExist()){
+                                                            myModal.dismiss();
                                                             Dialog dialog = new Dialog(LoginGGActivity.this);
                                                             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                                             dialog.setContentView(R.layout.dialog_check_report);
@@ -261,6 +270,7 @@ public class LoginGGActivity extends AppCompatActivity {
                                                             });
                                                         }
                                                         else{
+                                                            myModal.dismiss();
                                                             startActivity(intent);
                                                             finish();
                                                         }

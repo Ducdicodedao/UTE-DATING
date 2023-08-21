@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,14 +7,32 @@
     tools:context=".activities.LoginGGActivity"
     android:background="@drawable/gradient_bg"
     >
+    <ImageView
+        android:id="@+id/icon_ute"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/icon_ute_white"
+        android:layout_centerInParent="true"
+        />
 
-
-    <com.google.android.gms.common.SignInButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/sign_in_button"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="500dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Sign in with Google"
+        android:layout_below="@id/icon_ute"
+        android:layout_marginHorizontal="40dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_login"
+        android:textColor="@color/white"
+        android:drawableStart="@drawable/ic_google"
+        android:paddingHorizontal="20dp"
+        android:textAlignment="center"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import com.client.utedating.retrofit.NotificationApiService;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.RetrofitNotification;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
@@ -59,7 +58,6 @@ public class TinderCard {
     public int length;
 
     public UserApiService userApiService;
-    SharedPreferencesClient sharedPreferencesClient;
     int cardCount;
 
     NotificationApiService notificationApiService;
@@ -78,7 +76,7 @@ public class TinderCard {
 
     @Resolve
     public void onResolved() {
-        Glide.with(mContext).load(mProfile.getImageUrl()).into(profileImageView);
+        Glide.with(mContext).load(mProfile.getImageUrl()).placeholder(R.drawable.img_holder).into(profileImageView);
         nameAgeTxt.setText(mProfile.getName() + ", " + mProfile.getAge());
         locationNameTxt.setText(mProfile.getFaculty());
     }
@@ -88,14 +86,13 @@ public class TinderCard {
         Log.e("TAG", "onSwipedOut");
         //mSwipeView.addView(this);
 
-        sharedPreferencesClient = new SharedPreferencesClient(mContext);
-        cardCount = sharedPreferencesClient.getCardCount("cardcount");
+        cardCount = MySharedPreferences.getIntSharedPreference(mContext, "cardcount");
         Log.e("TAG", String.valueOf(cardCount));
         if (cardCount == length - 1) {
             mSwipeView.lockViews();
         } else {
             cardCount++;
-            sharedPreferencesClient.setCardCount("cardcount", cardCount);
+            MySharedPreferences.setIntSharedPreference(mContext,"cardcount", cardCount);
         }
         userApiService.addUserSwipedLeft(mBody).enqueue(new Callback<NoResultModel>() {
             @Override
@@ -120,14 +117,13 @@ public class TinderCard {
     @SwipeIn
     public void onSwipeIn() {
         Log.e("TAG", "onSwipedIn");
-        sharedPreferencesClient = new SharedPreferencesClient(mContext);
-        cardCount = sharedPreferencesClient.getCardCount("cardcount");
+        cardCount = MySharedPreferences.getIntSharedPreference(mContext,"cardcount");
         Log.e("TAG", String.valueOf(cardCount));
         if (cardCount == length - 1) {
             mSwipeView.lockViews();
         } else {
             cardCount++;
-            sharedPreferencesClient.setCardCount("cardcount", cardCount);
+            MySharedPreferences.setIntSharedPreference(mContext,"cardcount", cardCount);
         }
 
         userApiService.isUserSwipedRight(mBody.get("userId"), mBody.get("swipedUserId")).enqueue(new Callback<NoResultModel>() {
@@ -140,7 +136,7 @@ public class TinderCard {
                             public void onResponse(Call<NoResultModel> call, Response<NoResultModel> response) {
                                 if(response.isSuccessful()){
                                     Log.e("TAG", response.body().getMessage());
-                                    User user = sharedPreferencesClient.getUserInfo("user");
+                                    User user = MySharedPreferences.getUserInfo(mContext,"user");
                                     Intent i = new Intent(mContext, MatchedActivity.class);
                                     i.putExtra("userId", user.get_id());
                                     i.putExtra("swipedUserId", mProfile.get_id());

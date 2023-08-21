@@ -14,37 +14,26 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.client.utedating.R;
 import com.client.utedating.activities.ChatActivity;
-import com.client.utedating.activities.MainActivity;
 import com.client.utedating.adapters.ConversationAdapter;
-import com.client.utedating.adapters.LikeAdapter;
 import com.client.utedating.adapters.MatchedAdapter;
-import com.client.utedating.adapters.MessageListAdapter;
 import com.client.utedating.events.IConversationListener;
 import com.client.utedating.events.IUserListener;
 import com.client.utedating.models.Conversation;
 import com.client.utedating.models.ConversationModel;
-import com.client.utedating.models.Like;
-import com.client.utedating.models.MessageItem;
-import com.client.utedating.models.MessageModel;
 import com.client.utedating.models.User;
-import com.client.utedating.models.UsersLikedModel;
-import com.client.utedating.models.UsersMatchedModel;
 import com.client.utedating.retrofit.ConversationApiService;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,7 +46,6 @@ public class ChatFragment extends Fragment {
     RecyclerView recyclerViewMatched;
     RecyclerView recyclerViewMessage;
 
-    SharedPreferencesClient sharedPreferencesClient;
     User user;
     UserApiService userApiService;
     ConversationApiService conversationApiService;
@@ -71,6 +59,8 @@ public class ChatFragment extends Fragment {
     AppCompatTextView text_count_messsage;
     TextView textViewEmptyMatched;
     LinearLayout linearLayoutEmptyMessage;
+
+//    ShimmerFrameLayout shimmerFrameLayout;
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -147,8 +137,7 @@ public class ChatFragment extends Fragment {
     }
 
     private void fetchData(View view) {
-        sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-        user = sharedPreferencesClient.getUserInfo("user");
+        user = MySharedPreferences.getUserInfo(getActivity(), "user");
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
         conversationApiService = RetrofitClient.getInstance().create(ConversationApiService.class);
 

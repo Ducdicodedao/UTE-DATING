@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +21,7 @@ import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -61,8 +60,7 @@ public class InterestUpdateFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
 
-        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-        User user = sharedPreferencesClient.getUserInfo("user");
+        User user = MySharedPreferences.getUserInfo(getActivity(),"user");
 
         chipGroup = view.findViewById(R.id.chipGroupInterest);
         buttonSubmitInterest = view.findViewById(R.id.buttonSubmitInterest);
@@ -109,7 +107,7 @@ public class InterestUpdateFragment extends Fragment {
                 }
 
                 user.setInterests(interests);
-                sharedPreferencesClient.putUserInfo("user", user);
+                MySharedPreferences.putUserInfo(getActivity(),"user", user);
 
                 userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
                     @Override

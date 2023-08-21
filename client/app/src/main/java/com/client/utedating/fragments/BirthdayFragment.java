@@ -1,10 +1,13 @@
 package com.client.utedating.fragments;
 
-import android.content.Intent;
+import android.content.Context;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.client.utedating.R;
@@ -19,7 +23,7 @@ import com.client.utedating.activities.InitialActivity;
 import com.client.utedating.models.User;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.DateTimeException;
@@ -27,9 +31,10 @@ import java.time.LocalDate;
 
 public class BirthdayFragment extends Fragment {
     EditText editTextDay, editTextMonth, editTextYear;
-    FloatingActionButton floating_button_SubmitBirthday;
+    AppCompatButton buttonConfirm;
     UserApiService userApiService;
     InitialActivity initialActivity;
+    TextView textViewStep;
     public BirthdayFragment() {
         // Required empty public constructor
     }
@@ -46,17 +51,19 @@ public class BirthdayFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
+        textViewStep = view.findViewById(R.id.textViewStep);
         editTextDay = view.findViewById(R.id.editTextDay);
         editTextMonth = view.findViewById(R.id.editTextMonth);
         editTextYear = view.findViewById(R.id.editTextYear);
 
-        floating_button_SubmitBirthday = view.findViewById(R.id.floating_button_SubmitBirthday);
+        buttonConfirm = view.findViewById(R.id.buttonConfirm);
         initialActivity = (InitialActivity) getActivity();
+        User user = MySharedPreferences.getUserInfo(getActivity(), "user");
 
-        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-        User user = sharedPreferencesClient.getUserInfo("user");
-
-        floating_button_SubmitBirthday.setOnClickListener(new View.OnClickListener() {
+        Shader shader = new LinearGradient(0,0,0,textViewStep.getLineHeight(),
+                getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent), Shader.TileMode.REPEAT);
+        textViewStep.getPaint().setShader(shader);
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int a = Integer.parseInt(editTextDay.getText().toString());
@@ -78,8 +85,7 @@ public class BirthdayFragment extends Fragment {
                 }
 
                 user.setBirthday(editTextDay.getText().toString()+"/"+editTextMonth.getText().toString()+"/"+editTextYear.getText().toString());
-                SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-                sharedPreferencesClient.putUserInfo("user", user);
+                MySharedPreferences.putUserInfo(getActivity(), "user", user);
 
                 initialActivity.getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainerView, GenderFragment.class, null)

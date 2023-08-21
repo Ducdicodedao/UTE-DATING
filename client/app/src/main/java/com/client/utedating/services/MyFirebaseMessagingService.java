@@ -1,16 +1,12 @@
 package com.client.utedating.services;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
-import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -22,7 +18,7 @@ import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -50,11 +46,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
-        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(getApplicationContext());
-        User user = sharedPreferencesClient.getUserInfo("user");
+        User user = MySharedPreferences.getUserInfo(getApplicationContext(), "user");
         if(user != null){
             user.setToken(token);
-            sharedPreferencesClient.putUserInfo("user", user);
+            MySharedPreferences.putUserInfo(getApplicationContext(),"user", user);
             UserApiService userApiService = RetrofitClient.getInstance().create(UserApiService.class);
             userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
                 @Override

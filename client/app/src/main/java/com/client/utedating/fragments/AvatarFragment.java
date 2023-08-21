@@ -5,6 +5,8 @@ import static android.app.Activity.RESULT_OK;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,8 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,17 +24,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.client.utedating.R;
 import com.client.utedating.activities.InitialActivity;
-import com.client.utedating.activities.MainActivity;
 import com.client.utedating.models.User;
 import com.client.utedating.models.UserModel;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.storage.FirebaseStorage;
@@ -49,6 +49,7 @@ import retrofit2.Response;
 
 public class AvatarFragment extends Fragment {
     ImageView imageViewAvatar;
+    TextView textViewStep;
     EditText editTextAbout;
     TextInputLayout textInputLayoutAbout;
     Button buttonSubmitAvatar;
@@ -58,6 +59,7 @@ public class AvatarFragment extends Fragment {
     InitialActivity initialActivity;
     StorageReference mStorageReference;
     UserApiService userApiService;
+    User user;
     public AvatarFragment() {
         // Required empty public constructor
     }
@@ -78,19 +80,22 @@ public class AvatarFragment extends Fragment {
         textInputLayoutAbout = view.findViewById(R.id.textInputLayoutAbout);
         frameLayoutAddAvatar = view.findViewById(R.id.frameLayoutAddAvatar);
         buttonSubmitAvatar = view.findViewById(R.id.buttonSubmitAvatar);
-
+        textViewStep = view.findViewById(R.id.textViewStep);
+        Shader shader = new LinearGradient(0,0,0,textViewStep.getLineHeight(),
+                getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent), Shader.TileMode.REPEAT);
+        textViewStep.getPaint().setShader(shader);
         initialActivity = (InitialActivity) getActivity();
         mStorageReference = FirebaseStorage.getInstance("gs://ute-dating.appspot.com").getReference("avatar");
 
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
 
-        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-        User user = sharedPreferencesClient.getUserInfo("user");
+        user = MySharedPreferences.getUserInfo(getActivity(), "user");
 
         Glide
                 .with(view)
                 .load(user.getAvatar())
                 .centerCrop()
+                .placeholder(R.drawable.img_holder3)
                 .into(imageViewAvatar);
 
         frameLayoutAddAvatar.setOnClickListener(new View.OnClickListener() {
@@ -115,49 +120,53 @@ public class AvatarFragment extends Fragment {
             return;
         }
         if(editTextAbout.getText().toString().trim().length() > 50){
-            Toast.makeText(initialActivity,"Só lượng ký tự vượt quá 50", Toast.LENGTH_LONG ).show();
+            Toast.makeText(initialActivity,"Số lượng ký tự vượt quá 50", Toast.LENGTH_LONG).show();
             return;
         }
-        SharedPreferencesClient sharedPreferencesClient = new SharedPreferencesClient(view.getContext());
-        User user = sharedPreferencesClient.getUserInfo("user");
 
-        final  StorageReference storageReference = mStorageReference.child(user.getEmail()+"."+getfileextension(imgUri));
-        storageReference.putFile(imgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        if(imgUri != null){
+            final StorageReference storageReference = mStorageReference.child(user.getEmail()+"."+getfileextension(imgUri));
+            storageReference.putFile(imgUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uriImage) {
+                            user.setAvatar(String.valueOf(uriImage));
+                            updateBio();
+                        }
+                    });
+                }
+            });
+        }
+        else{
+            updateBio();
+        }
+    }
+
+    private void updateBio() {
+        user.setAbout(editTextAbout.getText().toString().trim());
+        MySharedPreferences.putUserInfo(getActivity(),"user", user);
+        Log.e("TAG", user.toString());
+
+        userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uriImage) {
-                        user.setAvatar(String.valueOf(uriImage));
-                        user.setAbout(editTextAbout.getText().toString().trim());
-                        sharedPreferencesClient.putUserInfo("user", user);
-                        Log.e("TAG", user.toString());
+            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                if(response.isSuccessful()){
+                    initialActivity.getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragmentContainerView, WelcomeFragment.class, null)
+                            .setReorderingAllowed(true)
+                            .addToBackStack("name") // name can be null
+                            .commit();
 
-                        userApiService.updateInfo(user.get_id(), user).enqueue(new Callback<UserModel>() {
-                            @Override
-                            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                                if(response.isSuccessful()){
-                                    initialActivity.getSupportFragmentManager().beginTransaction()
-                                            .replace(R.id.fragmentContainerView, WelcomeFragment.class, null)
-                                            .setReorderingAllowed(true)
-                                            .addToBackStack("name") // name can be null
-                                            .commit();
-
-                                    Log.e("TAG",response.body().getResult().toString());
-                                }
-                            }
-                            @Override
-                            public void onFailure(Call<UserModel> call, Throwable t) {
-                                Log.e("TAG", t.getMessage());
-                            }
-                        });
-                    }
-                });
+                    Log.e("TAG",response.body().getResult().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<UserModel> call, Throwable t) {
+                Log.e("TAG", t.getMessage());
             }
         });
-
-
-
     }
 
     private void addAvatar() {
@@ -185,7 +194,6 @@ public class AvatarFragment extends Fragment {
     private  String getfileextension(Uri uri){
         ContentResolver contentResolver = initialActivity.getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        return  mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
-
 }

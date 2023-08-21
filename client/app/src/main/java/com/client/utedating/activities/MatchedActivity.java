@@ -95,12 +95,14 @@ public class MatchedActivity extends AppCompatActivity {
                 .with(this)
                 .load(userAvatar)
                 .centerCrop()
+                .placeholder(R.drawable.img_holder2)
                 .into(imageViewMatchedUserA);
 
         Glide
                 .with(this)
                 .load(swipedUserAvatar)
                 .centerCrop()
+                .placeholder(R.drawable.img_holder2)
                 .into(imageViewMatchedUserB);
 
 

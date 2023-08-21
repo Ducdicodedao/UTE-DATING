@@ -106,15 +106,31 @@
             </RelativeLayout>
         </LinearLayout>
 
-
-
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewMessages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
             />
+<!--        <com.facebook.shimmer.ShimmerFrameLayout-->
+<!--            android:id="@+id/frameLayoutShimmer"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            >-->
+
+<!--            <LinearLayout-->
+<!--                android:id="@+id/linearShimmer"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="#ffffff"-->
+<!--                android:orientation="vertical"-->
+<!--                >-->
+<!--                <include layout="@layout/adapter_message_item_shimmer"/>-->
+<!--                <include layout="@layout/adapter_message_item_shimmer"/>-->
+<!--                <include layout="@layout/adapter_message_item_shimmer"/>-->
+<!--                <include layout="@layout/adapter_message_item_shimmer"/>-->
+<!--            </LinearLayout>-->
+<!--        </com.facebook.shimmer.ShimmerFrameLayout>-->
         <LinearLayout
             android:id="@+id/linearLayoutEmptyMessage"
             android:layout_width="match_parent"

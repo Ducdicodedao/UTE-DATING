@@ -15,12 +15,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -42,7 +39,7 @@ import com.client.utedating.models.NoResultModel;
 import com.client.utedating.models.User;
 import com.client.utedating.retrofit.RetrofitClient;
 import com.client.utedating.retrofit.UserApiService;
-import com.client.utedating.sharedPreferences.SharedPreferencesClient;
+import com.client.utedating.utils.MySharedPreferences;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.mlkit.vision.common.InputImage;
@@ -85,7 +82,6 @@ public class FaceVerifyActivity extends AppCompatActivity {
     private int imageSizeX;
     private int imageSizeY;
 
-    SharedPreferencesClient sharedPreferencesClient;
     User user;
     UserApiService userApiService;
 
@@ -125,8 +121,7 @@ public class FaceVerifyActivity extends AppCompatActivity {
     }
 
     private void setData() {
-        sharedPreferencesClient = new SharedPreferencesClient(this);
-        user = sharedPreferencesClient.getUserInfo("user");
+        user = MySharedPreferences.getUserInfo(FaceVerifyActivity.this,"user");
         userApiService = RetrofitClient.getInstance().create(UserApiService.class);
         String url;
         if(user.getGender().equals("male")){
@@ -140,6 +135,7 @@ public class FaceVerifyActivity extends AppCompatActivity {
                 .with(this)
                 .load(url)
                 .centerCrop()
+                .placeholder(R.drawable.img_holder2)
                 .into(imageViewPose);
 
         Glide.with(this)
@@ -196,7 +192,7 @@ public class FaceVerifyActivity extends AppCompatActivity {
                             if(response.isSuccessful()){
                                 Log.e("TAG", response.body().getMessage());
                                 user.setAuthenticated(true);
-                                sharedPreferencesClient.putUserInfo("user", user);
+                                MySharedPreferences.putUserInfo(FaceVerifyActivity.this,"user", user);
                             }
                         }
 

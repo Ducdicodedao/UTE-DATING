@@ -62,6 +62,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
 
         Glide.with(context)
                 .load(item.getPicture())
+                .placeholder(R.drawable.img_holder3)
                 .into(holder.thumbnail);
     }
 
